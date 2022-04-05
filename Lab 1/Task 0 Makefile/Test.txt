@@ -1,0 +1,3 @@
+Welcome to task0, the input numbers are 20 and 50
+The sum is 70
+sum of 20 and 50 is: 70
