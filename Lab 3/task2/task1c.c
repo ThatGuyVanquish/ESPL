@@ -146,6 +146,39 @@ link* pre_detection(link *virus_list, FILE* output) {
 	return virus_list;
 }
 
+void kill_virus(char *fileName, int signatureOffset, int signatureSize) {
+	FILE *fp = fopen(fileName, "r+");
+	fseek(fp, signatureOffset, 0);
+	char *noper = malloc(signatureSize);
+	int temp = signatureSize;
+	while (temp >= 0)
+	{
+		noper[temp] = 0x90;
+		temp--;
+	}
+	fwrite(noper, 1, signatureSize, fp);
+	fclose(fp);
+}
+
+link* order_assassin(link *virus_list, FILE* output) {
+	char fileName[100];
+	printf("Please enter a file name\n");
+	scanf("%[^\n]%*c", fileName);
+	if (sizeof(fileName) == 0)
+		return virus_list;
+
+	printf("Enter the virus starting byte:\n");
+	char *startingByte = malloc(100);
+	scanf("%[^\n]%*c", startingByte);
+	
+	printf("Enter the virus size:\n");
+	char *virusSize = malloc(100);
+	scanf("%[^\n]%*c", virusSize);
+	
+	kill_virus(fileName, atoi(startingByte), atoi(virusSize));
+	return virus_list;
+}
+
 link* quit(link *virus_list, FILE* output)
 {
 	if (virus_list != NULL)
@@ -162,6 +195,7 @@ int main(int argc, char **argv)
 	{"Load signatures", loadViruses}, 
 	{"Print signatures", list_print},
 	{"Detect viruses", pre_detection},
+	{"Fix file", order_assassin},
 	{"Quit", quit},
 	{NULL, NULL}};
 	FILE *output = stdout;
