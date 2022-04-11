@@ -86,11 +86,12 @@ link *loadViruses(link *virus_list, FILE* output)
 		return NULL;
 	FILE *fp = fopen(fileName, "r");
 	link *vlist = malloc(sizeof(link));
-	vlist->vir = NULL;
+//	vlist->vir = NULL;
 	if (fp == NULL) {
 		fprintf(stderr, "Can't open file\n");
 		exit(1);
 	}
+	list_free(virus_list);
 	while (!feof(fp)) {
 		virus *vir = malloc(sizeof(virus));
 		readVirus(vir, fp);
@@ -105,7 +106,6 @@ link *loadViruses(link *virus_list, FILE* output)
 		vlist = list_append(vlist, toInsert);
 	}
 	fclose(fp);
-	list_free(virus_list);
 	return vlist;
 }
 
@@ -174,7 +174,7 @@ int main(int argc, char **argv)
 		fgetc(stdin);
 		printf("Option: %d\n", input);
 		if (input >= 0 && input < len)
-			printf("Within bounds\n");
+			printf("Within bounds\n\n");
 		else
 		{
 			printf("Not within bounds\n");
