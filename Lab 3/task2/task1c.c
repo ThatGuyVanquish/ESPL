@@ -158,6 +158,7 @@ void kill_virus(char *fileName, int signatureOffset, int signatureSize) {
 	}
 	fwrite(noper, 1, signatureSize, fp);
 	fclose(fp);
+	free(noper);
 }
 
 link* order_assassin(link *virus_list, FILE* output) {
@@ -176,6 +177,8 @@ link* order_assassin(link *virus_list, FILE* output) {
 	scanf("%[^\n]%*c", virusSize);
 	
 	kill_virus(fileName, atoi(startingByte), atoi(virusSize));
+	free(startingByte);
+	free(virusSize);
 	return virus_list;
 }
 
