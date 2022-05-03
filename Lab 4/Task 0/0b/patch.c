@@ -18,17 +18,17 @@ int main (int argc , char* argv[], char* envp[])
 {
 	if (argc < 3 || argc > 3) return 0x55;
 	char* name;
-	if (strlen(argv[2]) > 6) name = strcat(argv[2], ".\n");
-	else 
-	{
+	if (strlen(argv[2]) > 6) 
 		name = strcat(argv[2], ".\n");
-		name = strncat(name, "\0\0\0\0\0", 8 - strlen(name));
-	}
+	else 
+		name = strcat(argv[2], ".\n\0");
 	int loc = 0x291;
 	int fd = system_call(SYS_OPEN, argv[1], O_RDRW, 0x0777);
-	fd = system_call(SYS_LSEEK, fd, loc, SEEK_CUR);
-	errno = system_call(SYS_WRITE, fd, "d", 1);
-	system_call(SYS_WRITE, STDOUT, itoa(errno), strlen(itoa(errno)));
+	system_call(SYS_LSEEK, fd, loc, SEEK_CUR);
+	errno = system_call(SYS_WRITE, fd, name, strlen(name));
+	int i = strlen(name);
+	for(; i < strlen("Shira.\n\0"); i++)
+		system_call(SYS_WRITE, fd, "\0", 1);
 	if (errno <= 0) return 0x55;
 	errno = system_call(SYS_CLOSE, fd);
 	if (errno < 0) return 0x55;
