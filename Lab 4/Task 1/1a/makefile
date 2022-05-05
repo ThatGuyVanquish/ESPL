@@ -11,8 +11,8 @@ start.o: start.s
 util.o: util.c
 	gcc -m32 -Wall -ansi -c -nostdlib -fno-stack-protector util.c -o util.o
 	
-main.o: count.c
-	gcc -m32 -Wall -ansi -c -nostdlib -fno-stack-protector count.c -o main.o
+main.o: count1a.c
+	gcc -m32 -Wall -ansi -c -nostdlib -fno-stack-protector count1a.c -o main.o
 	
 .PHONY: clean
 clean: 

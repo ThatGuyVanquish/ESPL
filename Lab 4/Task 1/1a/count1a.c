@@ -8,7 +8,7 @@
 
 extern int system_call();
 
-int count(int debug)
+void count(int debug)
 {
 	char currentByte[1];
 	while(1) {

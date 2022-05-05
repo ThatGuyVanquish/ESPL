@@ -124,6 +124,14 @@ int main (int argc , char* argv[])
 				}
 			}
 		}
+		if (input == 0 && debug == 1)
+		{
+			system_call(SYS_WRITE, STDOUT, "Input path is stdin\n\n", strlen("Input path is stdin\n\n"));
+		}
+		if (output == 1 && debug == 1)
+		{
+			system_call(SYS_WRITE, STDOUT, "Output path is stdout\n\n", strlen("Output path is stdout\n\n"));
+		}
 		count(debug, input, output);
 		int closein = system_call(SYS_CLOSE, input);
 		int closeout = system_call(SYS_CLOSE, output);
