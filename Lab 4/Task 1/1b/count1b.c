@@ -87,7 +87,7 @@ int main (int argc , char* argv[])
 		{
 			if (strncmp(argv[i], "-o", 2) == 0)
 			{	
-				output = system_call(SYS_OPEN, argv[i] + 2, O_CW, 00777);
+				output = system_call(SYS_OPEN, argv[i] + 2, O_CW, 0777);
 				if (output < 0) 
 				{
 					system_call(SYS_WRITE, STDOUT, "Error opening output file\n", strlen("Error opening output file\n"));

