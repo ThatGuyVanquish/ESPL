@@ -1,6 +1,4 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-make: *** No rule to make target 'all'.  Stop.
-
 # GNU Make 4.2.1
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2016 Free Software Foundation, Inc.
@@ -8,7 +6,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun May 15 11:39:21 2022
+# Make data base, printed on Mon May 16 19:15:12 2022
 
 # Variables
 
@@ -34,8 +32,6 @@ VSCODE_LOG_NATIVE = false
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
 IM_CONFIG_PHASE = 1
-# environment
-PLATFORMIO_IDE = 2.4.3
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # environment
@@ -53,7 +49,7 @@ SNAP_DATA = /var/snap/code/96
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
 # environment
-JOURNAL_STREAM = 8:31687
+JOURNAL_STREAM = 8:35863
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # environment
@@ -67,8 +63,6 @@ MAKEFILE_LIST :=
 # environment
 GIO_LAUNCHED_DESKTOP_FILE = /var/lib/snapd/desktop/applications/code_code.desktop
 # environment
-QT_IM_MODULE = ibus
-# environment
 USERNAME = nave
 # environment
 MAKELEVEL := 0
@@ -81,7 +75,7 @@ VSCODE_VERBOSE_LOGGING = true
 # environment
 _ = /snap/code/96/usr/share/code/code
 # environment
-MANAGERPID = 1204
+MANAGERPID = 1165
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -93,11 +87,11 @@ GSETTINGS_SCHEMA_DIR = /snap/code/96/usr/share/glib-2.0/schemas
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-NO_PROXY = 127.0.0.1
+PATH = /home/nave/.local/bin:/home/nave/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/nave:@/tmp/.ICE-unix/1490,unix/nave:/tmp/.ICE-unix/1490
+SESSION_MANAGER = local/nave:@/tmp/.ICE-unix/1456,unix/nave:/tmp/.ICE-unix/1456
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -115,7 +109,7 @@ DISABLE_WAYLAND = 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = 112ae2771b6542eba54746aedfe99169
+INVOCATION_ID = d6ecf39b09c44119a5a847fc836996ae
 # environment
 GDK_PIXBUF_MODULEDIR = /snap/code/96/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
 # default
@@ -127,7 +121,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 50689
+GIO_LAUNCHED_DESKTOP_FILE_PID = 2001
 # automatic
 %F = $(notdir $%)
 # environment
@@ -141,7 +135,7 @@ PWD = /home/nave/Documents/GitHub/ESPL
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 1421
+SSH_AGENT_PID = 1381
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -159,7 +153,7 @@ VSCODE_CODE_CACHE_PATH = /home/nave/.config/Code/CachedData/da15b6fd3ef856477bf6
 # environment
 LOGNAME = nave
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
 # environment
@@ -180,14 +174,12 @@ GNOME_DESKTOP_SESSION_ID = this-is-deprecated
 LC_TIME = en_IL.UTF-8
 # environment
 SNAP_REAL_HOME = /home/nave
-# environment
-PLATFORMIO_PATH = /home/nave/.platformio/penv/bin:/home/nave/.platformio/penv:/home/nave/.platformio/python3/bin:/home/nave/.local/bin:/home/nave/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # default
 MAKE = $(MAKE_COMMAND)
 # default
 MAKECMDGOALS := all
 # environment
-PATH = /home/nave/.local/bin:/home/nave/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+QT_IM_MODULE = ibus
 # environment
 SNAP_USER_DATA = /home/nave/snap/code/96
 # environment
@@ -195,7 +187,7 @@ SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-a87b35e9-8203-439a-90a0-139a81420536.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-39ca61b7-f651-40b5-be64-58371ad4e93c.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
@@ -249,8 +241,6 @@ LC_NUMERIC = en_IL.UTF-8
 # automatic
 <F = $(notdir $<)
 # environment
-PLATFORMIO_CALLER = vscode
-# environment
 LC_MEASUREMENT = en_IL.UTF-8
 # environment
 SNAP_NAME = code
@@ -279,10 +269,9 @@ LC_ADDRESS = en_IL.UTF-8
 # environment
 LANG = C
 # environment
- 
-VSCODE_PID = 50738
+VSCODE_PID = 2073
 # variable set hash-table stats:
-# Load=134/1024=13%, Rehash=0, Collisions=25/156=16%
+# Load=130/1024=13%, Rehash=0, Collisions=23/152=15%
 
 # Pattern-specific Variable Values
 
@@ -299,6 +288,9 @@ VSCODE_PID = 50738
 # No implicit rules.
 
 # Files
+ 
+make: *** No rule to make target 'all'.  Stop.
+
 
 # Not a target:
 all:
@@ -348,6 +340,6 @@ GNUmakefile:
 # strcache performance: lookups = 22 / hit rate = 13%
 # hash-table stats:
 # Load=19/8192=0%, Rehash=0, Collisions=1/22=5%
-# Finished Make data base on Sun May 15 11:39:21 2022
+# Finished Make data base on Mon May 16 19:15:12 2022
 
  

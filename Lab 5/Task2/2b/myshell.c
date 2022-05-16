@@ -23,6 +23,13 @@ cmdLine* execute(cmdLine* pCmdLine, int debug);
 void addProcess(process** process_list, cmdLine* cmd, pid_t pid);
 process* nextProcess(process* p, cmdLine* cmd, pid_t pid);
 void printProcessList(process** process_list);
+void freeProcessList(process* process_list);
+void updateProcessList(process **process_list);
+void deleteTerminated(process** process_list);
+void freeProcess(process* process);
+void updateProcessStatus(process* process_list, int pid, int status);
+void sendToSleep(int time, int pid);
+void stopProc(int pid);
 
 int main(int argc, char** argv) {
     int debug = 0;
@@ -59,7 +66,10 @@ int specialForms(cmdLine* pCmdLine)
     int ret = 1;
     strcmp(pCmdLine->arguments[0], "quit") == 0 ? _exit(0) :
     strcmp(pCmdLine->arguments[0], "cd") == 0 ? changeDir(pCmdLine->arguments[1]) :
-    strcmp(pCmdLine->arguments[0], "showprocs") == 0 ? printProcessList(&plist) : ret--;
+    strcmp(pCmdLine->arguments[0], "showprocs") == 0 ? printProcessList(&plist) :
+    strcmp(pCmdLine->arguments[0], "nap") == 0 ? sendToSleep(atoi(pCmdLine->arguments[1]), atoi(pCmdLine->arguments[2])) :
+    strcmp(pCmdLine->arguments[0], "stop") == 0 ? stopProc(atoi(pCmdLine->arguments[1])) :
+    ret--;
     return ret;
 }
 
@@ -110,8 +120,8 @@ process* nextProcess(process* p, cmdLine* cmd, pid_t pid)
 
 void printProcessList(process** process_list)
 {
+    updateProcessList(process_list);
     process* current = process_list[0];
-    fprintf(stderr, "%s\n", current->cmd->arguments[0]);
     while (current != NULL)
     {
         char* status = current->status == TERMINATED ? "TERMINATED" : 
@@ -120,6 +130,41 @@ void printProcessList(process** process_list)
         printf("%i %s %s\n", current->pid, current->cmd->arguments[0], status);
         current = current->next;
     }
+    deleteTerminated(process_list);
+}
+
+void deleteTerminated(process** process_list)
+{
+    if (*process_list == NULL) return;
+    process* head = *process_list;
+    for (; head != NULL && head->status == TERMINATED; head = head->next) {};
+    if (head == NULL) 
+    {
+        *process_list = NULL;
+        return;
+    }
+    process* current = head;
+    process* next = current->next;
+    for(;next != NULL; next = next->next)
+    {
+        if (next->status != TERMINATED) 
+        {
+            current->next = next;
+            current = next;
+        }
+        else 
+        {
+            current->next = NULL;
+            //freeProcess(next);
+        }
+    }
+    process_list = &head;
+}
+
+void freeProcess(process* process)
+{
+    freeCmdLines(process->cmd);
+    free(process);
 }
 
 void freeProcessList(process* process_list)
@@ -128,4 +173,46 @@ void freeProcessList(process* process_list)
     freeCmdLines(process_list->cmd);
     freeProcessList(process_list->next);
     free(process_list);
+}
+
+void updateProcessList(process **process_list)
+{
+    process* current = *process_list;
+    for(; current != NULL; current = current->next)
+    {
+        int status;
+        int procid = waitpid(current->pid, &status, WNOHANG | WUNTRACED | WCONTINUED);
+        if (procid != 0) 
+        {
+            WIFEXITED(status) || WIFSIGNALED(status) ? updateProcessStatus(*process_list, current->pid, TERMINATED) :
+            WIFSTOPPED(status) ? updateProcessStatus(*process_list, current->pid, SUSPENDED) :
+            updateProcessStatus(*process_list, current->pid, RUNNING);
+        }
+    }
+}
+
+void updateProcessStatus(process* process_list, int pid, int status)
+{
+    process* current = process_list;
+    for (; current != NULL; current = current->next)
+    {
+        if (current->pid == pid)
+        {
+            current->status = status;
+            break;
+        }
+    }
+}
+
+void sendToSleep(int time, int pid)
+{
+    fork();
+    kill(pid, SIGTSTP);
+    sleep(time);
+    kill(pid, SIGCONT);
+}
+
+void stopProc(int pid)
+{
+    kill(pid, SIGINT);
 }
