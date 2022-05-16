@@ -1,0 +1,6 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/home/nave/Documents/GitHub/ESPL'
+make: Leaving directory '/home/nave/Documents/GitHub/ESPL'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+

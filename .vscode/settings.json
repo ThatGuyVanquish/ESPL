@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "limits.h": "c",
+        "cstdlib": "c",
+        "lineparser.h": "c",
+        "signal.h": "c"
+    }
+}
