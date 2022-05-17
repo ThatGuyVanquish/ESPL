@@ -30,6 +30,7 @@ void freeProcess(process* process);
 void updateProcessStatus(process* process_list, int pid, int status);
 void sendToSleep(int time, int pid);
 void stopProc(int pid);
+void quit();
 
 int main(int argc, char** argv) {
     int debug = 0;
@@ -64,13 +65,24 @@ void changeDir(char* dir)
 int specialForms(cmdLine* pCmdLine) 
 {
     int ret = 1;
-    strcmp(pCmdLine->arguments[0], "quit") == 0 ? _exit(0) :
+    strcmp(pCmdLine->arguments[0], "quit") == 0 ? quit() :
     strcmp(pCmdLine->arguments[0], "cd") == 0 ? changeDir(pCmdLine->arguments[1]) :
     strcmp(pCmdLine->arguments[0], "showprocs") == 0 ? printProcessList(&plist) :
     strcmp(pCmdLine->arguments[0], "nap") == 0 ? sendToSleep(atoi(pCmdLine->arguments[1]), atoi(pCmdLine->arguments[2])) :
     strcmp(pCmdLine->arguments[0], "stop") == 0 ? stopProc(atoi(pCmdLine->arguments[1])) :
     ret--;
     return ret;
+}
+
+void quit()
+{
+    process* curr = plist;
+    for(; curr != NULL; curr = curr->next)
+    {
+        curr->status == TERMINATED ? kill(curr->pid, SIGINT) : 0;
+    }
+    updateProcessList(&plist);
+    _exit(0);
 }
 
 cmdLine* execute(cmdLine* pCmdLine, int debug)
