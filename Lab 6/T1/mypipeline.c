@@ -6,6 +6,7 @@
 #include <linux/limits.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 
 cmdLine* execute(cmdLine* pCmdLine, int debug);
 
@@ -57,6 +58,18 @@ cmdLine* singleCommand(cmdLine* pCmdLine, int debug)
     int pid = fork();
     if (!pid) // pid is 0 if it is a child process, meaning it forked successfully 
     {
+        if (pCmdLine->inputRedirect != NULL)
+        {
+            close(0);
+            int inputfd = open(pCmdLine->inputRedirect, O_RDONLY, 0644);
+            dup(inputfd);
+        }
+        if (pCmdLine->outputRedirect != NULL)
+        {
+            close(1);
+            int outputfd = open(pCmdLine->outputRedirect, O_WRONLY | O_CREAT, 0644);
+            dup(outputfd);
+        }
         int err = execvp(pCmdLine->arguments[0], pCmdLine->arguments);
         if (err < 0)
             {
@@ -79,71 +92,6 @@ cmdLine* execute(cmdLine* pCmdLine, int debug)
 {
     if (specialForms(pCmdLine)) return pCmdLine; // Doesn't need to fork process if it was quit(stopped) / cd(done) / showprocs(done)
     if (pCmdLine->next == NULL) // There's no pipeline character
-    {
-        printf("blyat\n");
         return singleCommand(pCmdLine, debug);
-    }
-    int fd[2];
-    int errpipe = pipe(fd);
-    if (errpipe == -1)
-    {
-        perror("Error with pipe");
-        _exit(errpipe);
-    }
-    if (debug) fprintf(stderr, "(parent_process>forking...)\n");
-    int ch1 = fork();
-    if (!ch1)
-    {
-        if (debug) fprintf(stderr, "(child1>redirecting stdout to the write end of the pipe...)\n");
-        close(1);
-        dup(fd[1]);
-        close(fd[1]);
-        if (debug) fprintf(stderr, "(child1>going to execute cmd: %s)\n", pCmdLine->arguments[0]);
-        int err = execvp(pCmdLine->arguments[0], pCmdLine->arguments);
-        if (err < 0)
-            {
-                perror("Error");
-                _exit(err);
-            }
-        
-    }
-    else
-    {
-        if (debug) 
-        {
-            fprintf(stderr, "(parent_process>created process with id: %i)\n", ch1);
-            fprintf(stderr, "(parent_process>closing the write end of the pipe...)\n");
-        }
-        close(fd[1]);
-        if (debug) fprintf(stderr, "(parent_process>forking...)\n");
-        int ch2 = fork();
-        if (!ch2)
-        {
-            if (debug) fprintf(stderr, "(child2>redirecting stdout to the read end of the pipe...)\n");
-            close(0);
-            dup(fd[0]);
-            close(fd[0]);
-            if (debug) fprintf(stderr, "(child2>going to execute cmd: %s)\n", pCmdLine->next->arguments[0]);
-            int err = execvp(pCmdLine->next->arguments[0], pCmdLine->next->arguments);
-            if (err < 0)
-                {
-                    perror("Error");
-                    _exit(err);
-                }
-        }
-        if (debug) 
-        {
-            fprintf(stderr, "(parent_process>created process with id: %i)\n", ch2);
-            fprintf(stderr, "(parent_process>closing the read end of the pipe...)\n");
-        }
-        close(fd[0]);
-        if (debug)
-            fprintf(stderr, "(parent_process>waiting for child process to terminate...)\n");
-        if (pCmdLine->blocking)
-            waitpid(ch1, NULL, 0);
-        if (pCmdLine->next != NULL && pCmdLine->next->blocking)
-            waitpid(ch2, NULL, 0);
-    }
-    if (debug) fprintf(stderr, "(parent_process>exiting...)\n");
     return pCmdLine;
 }
