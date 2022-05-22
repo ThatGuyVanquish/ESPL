@@ -80,7 +80,6 @@ cmdLine* execute(cmdLine* pCmdLine, int debug)
     if (specialForms(pCmdLine)) return pCmdLine; // Doesn't need to fork process if it was quit(stopped) / cd(done) / showprocs(done)
     if (pCmdLine->next == NULL) // There's no pipeline character
     {
-        printf("blyat\n");
         return singleCommand(pCmdLine, debug);
     }
     int fd[2];
