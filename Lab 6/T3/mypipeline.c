@@ -8,6 +8,36 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
+void runPipe(cmdLine* p, int** pipes, int* lPipe, int* rPipe, int debug);
+
+int ** createPipes(int nPipes){
+    int** pipes;
+    pipes=(int**) calloc(nPipes, sizeof(int));
+
+    for (int i=0; i<nPipes;i++){
+        pipes[i]=(int*) calloc(2, sizeof(int));
+        pipe(pipes[i]);
+    }  
+    return pipes;
+
+    }
+void releasePipes(int **pipes, int nPipes){
+        for (int i=0; i<nPipes;i++){
+            free(pipes[i]);
+        
+        }  
+    free(pipes);
+}
+int *leftPipe(int **pipes, cmdLine *pCmdLine){
+    if (pCmdLine->idx == 0) return NULL;
+    return pipes[pCmdLine->idx -1];
+}
+
+int *rightPipe(int **pipes, cmdLine *pCmdLine){
+    if (pCmdLine->next == NULL) return NULL;
+    return pipes[pCmdLine->idx];
+}
+
 cmdLine* execute(cmdLine* pCmdLine, int debug);
 
 int main(int argc, char** argv) {
@@ -136,39 +166,87 @@ cmdLine* execute(cmdLine* pCmdLine, int debug)
     }
     else
     {
-        if (debug) 
+        int numOfPipes = 0;
+        for(cmdLine* curr = pCmdLine; curr != NULL; curr = curr->next)
         {
-            fprintf(stderr, "(parent_process>created process with id: %i)\n", ch1);
-            fprintf(stderr, "(parent_process>closing the write end of the pipe...)\n");
+            if (curr->next == NULL) numOfPipes = curr->idx;
         }
-        close(fd[1]);
-        if (debug) fprintf(stderr, "(parent_process>forking...)\n");
-        int ch2 = fork();
-        if (!ch2)
+        
+        int** pipes = createPipes(numOfPipes);
+        runPipe(pCmdLine, pipes, leftPipe(pipes, pCmdLine), rightPipe(pipes, pCmdLine), debug);
+        releasePipes(pipes, numOfPipes);
+    }
+    return pCmdLine;
+}
+
+void runPipe(cmdLine* p, int** pipes, int* lPipe, int* rPipe, int debug)
+{
+    if (lPipe != NULL) close(lPipe[1]);
+    if (rPipe == NULL) // last function on pipeline
+    {
+        int cid2 = fork();
+        if (!cid2)
         {
-            if (debug) fprintf(stderr, "(child2>redirecting stdout to the read end of the pipe...)\n");
-            close(0);
-            dup(fd[0]);
-            close(fd[0]);
-            if (debug) fprintf(stderr, "(child2>going to execute cmd: %s)\n", pCmdLine->next->arguments[0]);
-            execCMD(pCmdLine->next);
+            dup2(lPipe[0], 0);
+            close(lPipe[0]);
+            if (debug) fprintf(stderr, "(child>going to execute cmd: %s)\n", p->next->arguments[0]);
+            execCMD(p);
         }
-        else 
+        else
         {
             if (debug) 
             {
-                fprintf(stderr, "(parent_process>created process with id: %i)\n", ch2);
+                fprintf(stderr, "(parent_process>created process with id: %i)\n", cid2);
                 fprintf(stderr, "(parent_process>closing the read end of the pipe...)\n");
             }
-            close(fd[0]);
+            close(lPipe[0]);
             if (debug)
                 fprintf(stderr, "(parent_process>waiting for child process to terminate...)\n");
-            if (pCmdLine->blocking)
-                waitpid(ch1, NULL, 0);
-            if (pCmdLine->next != NULL && pCmdLine->next->blocking)
-                waitpid(ch2, NULL, 0);
-        }   
+            if (p->blocking)
+                waitpid(cid2, NULL, 0);
+            if (debug) fprintf(stderr, "(parent_process>exiting...)\n");
+            return;
+        }
     }
-    if (debug) fprintf(stderr, "(parent_process>exiting...)\n");
-    return pCmdLine;
+    int cid1 = fork();
+    if (!cid1)
+    {
+        if (lPipe != NULL)
+        {
+            dup2(lPipe[0], 0);
+            close(lPipe[0]);
+        }
+        if (debug) fprintf(stderr, "(child>redirecting stdout to the write end of the pipe...)\n");
+        dup2(rPipe[1], 1);
+        close(rPipe[1]);
+        if (debug) fprintf(stderr, "(child>going to execute cmd: %s)\n", p->arguments[0]);
+        execCMD(p);
+    }
+    else 
+    {
+        if (debug) 
+        {
+            fprintf(stderr, "(parent_process>created process with id: %i)\n", cid1);
+            fprintf(stderr, "(parent_process>closing the write end of the pipe...)\n");
+        }
+        if (p->blocking)
+            waitpid(cid1, NULL, 0);
+        runPipe(p->next, pipes, leftPipe(pipes, p->next), rightPipe(pipes, p->next), debug);
+    }
 }
+
+/*
+A | B | C | D
+pipe[0][1]
+... 
+pipe[0][0]
+... -> pipe[1][0]
+pipe[1][1]
+...
+pipe[1][0]
+...-> pipe[2][0]
+.
+.
+.
+.
+*/
