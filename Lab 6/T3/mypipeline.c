@@ -154,28 +154,15 @@ cmdLine* execute(cmdLine* pCmdLine, int debug)
         _exit(errpipe);
     }
     if (debug) fprintf(stderr, "(parent_process>forking...)\n");
-    int ch1 = fork();
-    if (!ch1)
+    int numOfPipes = 0;
+    for(cmdLine* curr = pCmdLine; curr != NULL; curr = curr->next)
     {
-        if (debug) fprintf(stderr, "(child1>redirecting stdout to the write end of the pipe...)\n");
-        close(1);
-        dup(fd[1]);
-        close(fd[1]);
-        if (debug) fprintf(stderr, "(child1>going to execute cmd: %s)\n", pCmdLine->arguments[0]);
-        execCMD(pCmdLine);
+        if (curr->next == NULL) numOfPipes = curr->idx;
     }
-    else
-    {
-        int numOfPipes = 0;
-        for(cmdLine* curr = pCmdLine; curr != NULL; curr = curr->next)
-        {
-            if (curr->next == NULL) numOfPipes = curr->idx;
-        }
-        
-        int** pipes = createPipes(numOfPipes);
-        runPipe(pCmdLine, pipes, leftPipe(pipes, pCmdLine), rightPipe(pipes, pCmdLine), debug);
-        releasePipes(pipes, numOfPipes);
-    }
+    
+    int** pipes = createPipes(numOfPipes);
+    runPipe(pCmdLine, pipes, leftPipe(pipes, pCmdLine), rightPipe(pipes, pCmdLine), debug);
+    releasePipes(pipes, numOfPipes);
     return pCmdLine;
 }
 
