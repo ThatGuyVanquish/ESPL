@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat May 21 18:50:10 2022
+# Make data base, printed on Tue May 24 22:23:24 2022
 
 # Variables
 
@@ -34,8 +34,6 @@ VSCODE_LOG_NATIVE = false
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
 IM_CONFIG_PHASE = 1
-# environment
-PLATFORMIO_IDE = 2.4.3
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # environment
@@ -49,11 +47,11 @@ CURDIR := /home/nave/Documents/GitHub/ESPL
 # makefile
 SHELL = /bin/sh
 # environment
-SNAP_DATA = /var/snap/code/96
+SNAP_DATA = /var/snap/code/97
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
 # environment
-JOURNAL_STREAM = 8:34200
+JOURNAL_STREAM = 8:32730
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # environment
@@ -67,8 +65,6 @@ MAKEFILE_LIST :=
 # environment
 GIO_LAUNCHED_DESKTOP_FILE = /var/lib/snapd/desktop/applications/code_code.desktop
 # environment
-QT_IM_MODULE = ibus
-# environment
 USERNAME = nave
 # environment
 MAKELEVEL := 0
@@ -79,9 +75,9 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-_ = /snap/code/96/usr/share/code/code
+_ = /snap/code/97/usr/share/code/code
 # environment
-MANAGERPID = 1241
+MANAGERPID = 1193
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -89,23 +85,23 @@ LC_NAME = en_IL.UTF-8
 # environment
 VSCODE_CWD = /home/nave
 # environment
-GSETTINGS_SCHEMA_DIR = /snap/code/96/usr/share/glib-2.0/schemas
+GSETTINGS_SCHEMA_DIR = /snap/code/97/usr/share/glib-2.0/schemas
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-NO_PROXY = 127.0.0.1
+PATH = /home/nave/.local/bin:/home/nave/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/nave:@/tmp/.ICE-unix/1543,unix/nave:/tmp/.ICE-unix/1543
+SESSION_MANAGER = local/nave:@/tmp/.ICE-unix/1481,unix/nave:/tmp/.ICE-unix/1481
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GDK_PIXBUF_MODULE_FILE = /home/nave/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # environment
-SNAP = /snap/code/96
+SNAP = /snap/code/97
 # environment
-SNAP_VERSION = da15b6fd
+SNAP_VERSION = c3511e6c
 # environment
 XDG_MENU_PREFIX = gnome-
 # environment
@@ -115,9 +111,9 @@ DISABLE_WAYLAND = 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = f700a7664af248f2900e2b6d43223aea
+INVOCATION_ID = 32dfd42bee1247e0ad876d62dfee4cdc
 # environment
-GDK_PIXBUF_MODULEDIR = /snap/code/96/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+GDK_PIXBUF_MODULEDIR = /snap/code/97/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -127,7 +123,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 3250
+GIO_LAUNCHED_DESKTOP_FILE_PID = 6624
 # automatic
 %F = $(notdir $%)
 # environment
@@ -141,7 +137,7 @@ PWD = /home/nave/Documents/GitHub/ESPL
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 1455
+SSH_AGENT_PID = 1415
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -155,7 +151,7 @@ LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
 VSCODE_CLI = 1
 # environment
-VSCODE_CODE_CACHE_PATH = /home/nave/.config/Code/CachedData/da15b6fd3ef856477bf6f4fb29ba1b7af717770d
+VSCODE_CODE_CACHE_PATH = /home/nave/.config/Code/CachedData/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
 # environment
 LOGNAME = nave
 # environment
@@ -180,28 +176,26 @@ GNOME_DESKTOP_SESSION_ID = this-is-deprecated
 LC_TIME = en_IL.UTF-8
 # environment
 SNAP_REAL_HOME = /home/nave
-# environment
-PLATFORMIO_PATH = /home/nave/.platformio/penv/bin:/home/nave/.platformio/penv:/home/nave/.platformio/python3/bin:/home/nave/.local/bin:/home/nave/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # default
 MAKE = $(MAKE_COMMAND)
 # default
 MAKECMDGOALS := all
 # environment
-PATH = /home/nave/.local/bin:/home/nave/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+QT_IM_MODULE = ibus
 # environment
-SNAP_USER_DATA = /home/nave/snap/code/96
+SNAP_USER_DATA = /home/nave/snap/code/97
 # environment
 SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-31d83978-2b4b-4afc-90e2-8df9c720db44.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-8686aa16-e684-4846-b99c-5c177143b165.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
 USER = nave
 # environment
-SNAP_REVISION = 96
+SNAP_REVISION = 97
 # environment
 LC_MONETARY = en_IL.UTF-8
 # makefile
@@ -221,7 +215,7 @@ MAKE_COMMAND := make
 # environment
 LANGUAGE = en_US:en
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-7daa0329-1.67.1-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-7daa0329-1.67.2-main.sock
 # environment
 BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
 # makefile
@@ -248,8 +242,6 @@ SNAP_COOKIE = -vUwK1OLBQCEVFiO5p5J7elC15BVTMvQlSEmaVbyavmyrfdvdQA5
 LC_NUMERIC = en_IL.UTF-8
 # automatic
 <F = $(notdir $<)
-# environment
-PLATFORMIO_CALLER = vscode
 # environment
 LC_MEASUREMENT = en_IL.UTF-8
 # environment
@@ -279,10 +271,9 @@ LC_ADDRESS = en_IL.UTF-8
 # environment
 LANG = C
 # environment
- 
-VSCODE_PID = 3297
+VSCODE_PID = 6673
 # variable set hash-table stats:
-# Load=134/1024=13%, Rehash=0, Collisions=25/156=16%
+# Load=130/1024=13%, Rehash=0, Collisions=23/152=15%
 
 # Pattern-specific Variable Values
 
@@ -348,6 +339,6 @@ GNUmakefile:
 # strcache performance: lookups = 23 / hit rate = 13%
 # hash-table stats:
 # Load=20/8192=0%, Rehash=0, Collisions=1/23=4%
-# Finished Make data base on Sat May 21 18:50:10 2022
+# Finished Make data base on Tue May 24 22:23:24 2022
 
  

@@ -125,33 +125,29 @@ void execCMD(cmdLine* pCmdLine)
             int inputfd = open(pCmdLine->inputRedirect, O_RDONLY, 0644);
             dup(inputfd);
         }
-        if (pCmdLine->outputRedirect != NULL)
+    if (pCmdLine->outputRedirect != NULL)
         {
             close(1);
             int outputfd = open(pCmdLine->outputRedirect, O_WRONLY | O_CREAT, 0644);
             dup(outputfd);
         }
-        int err = execvp(pCmdLine->arguments[0], pCmdLine->arguments);
-        if (err < 0)
-            {
-                perror("Error");
-                _exit(err);
-            }
+    int err = execvp(pCmdLine->arguments[0], pCmdLine->arguments);
+    if (err < 0)
+        {
+            perror("Error");
+            _exit(err);
+        }
 }
 
 cmdLine* execute(cmdLine* pCmdLine, int debug)
 {
     if (specialForms(pCmdLine)) return pCmdLine; // Doesn't need to fork process if it was quit(stopped) / cd(done) / showprocs(done)
-    if (pCmdLine->next == NULL) // There's no pipeline character
-    {
-        return singleCommand(pCmdLine, debug);
-    }
-    if (debug) fprintf(stderr, "(parent_process>forking...)\n");
+    if (pCmdLine->next == NULL) return singleCommand(pCmdLine, debug); // Single command
+
     int numOfPipes = 0;
+
     for(cmdLine* curr = pCmdLine; curr != NULL; curr = curr->next)
-    {
         if (curr->next == NULL) numOfPipes = curr->idx;
-    }
     
     int** pipes = createPipes(numOfPipes);
     runPipe(pCmdLine, pipes, leftPipe(pipes, pCmdLine), rightPipe(pipes, pCmdLine), debug);
@@ -164,6 +160,7 @@ void runPipe(cmdLine* p, int** pipes, int* lPipe, int* rPipe, int debug)
     if (lPipe != NULL) close(lPipe[1]);
     if (rPipe == NULL) // last function on pipeline
     {
+        if (debug) fprintf(stderr, "(parent_process>forking...)\n");
         int cid2 = fork();
         if (!cid2)
         {
@@ -188,6 +185,7 @@ void runPipe(cmdLine* p, int** pipes, int* lPipe, int* rPipe, int debug)
             return;
         }
     }
+    if (debug) fprintf(stderr, "(parent_process>forking...)\n");
     int cid1 = fork();
     if (!cid1)
     {
