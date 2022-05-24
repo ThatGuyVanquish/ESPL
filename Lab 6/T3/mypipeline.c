@@ -146,13 +146,6 @@ cmdLine* execute(cmdLine* pCmdLine, int debug)
     {
         return singleCommand(pCmdLine, debug);
     }
-    int fd[2];
-    int errpipe = pipe(fd);
-    if (errpipe == -1)
-    {
-        perror("Error with pipe");
-        _exit(errpipe);
-    }
     if (debug) fprintf(stderr, "(parent_process>forking...)\n");
     int numOfPipes = 0;
     for(cmdLine* curr = pCmdLine; curr != NULL; curr = curr->next)
