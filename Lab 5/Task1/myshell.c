@@ -5,6 +5,7 @@
 #include "LineParser.h"
 #include <linux/limits.h>
 #include <sys/wait.h>
+#include <time.h>
 
 cmdLine* execute(cmdLine* pCmdLine, int debug);
 
@@ -18,17 +19,20 @@ int main(int argc, char** argv) {
             break;
         }
 
-
     while(1)
     {
         char cdbuffer[PATH_MAX];
         char* dir = getcwd(cdbuffer, PATH_MAX);
-        printf("%s$", dir);
+        printf("%s$ ", dir);
         char userInput[2048];
         fgets(userInput, 2048, stdin);
-        freeCmdLines(
-            execute(parseCmdLines(userInput), debug)
-        );
+        cmdLine* command = parseCmdLines(userInput);
+        clock_t start = clock();
+        execute(command, debug);
+        clock_t end = clock();
+        double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+        printf("%s's runtime was %f seconds\n", command->arguments[0], cpu_time_used);
+        freeCmdLines(command);
     }
     return 0;
 }
