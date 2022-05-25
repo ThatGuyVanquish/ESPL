@@ -8,6 +8,8 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
+char* lastCommand;
+
 void runPipe(cmdLine* p, int** pipes, int* lPipe, int* rPipe, int debug);
 
 int ** createPipes(int nPipes){
@@ -61,6 +63,8 @@ int main(int argc, char** argv) {
         freeCmdLines(
             execute(parseCmdLines(userInput), debug)
         );
+        lastCommand = malloc(2048);
+        strcpy(lastCommand, userInput); // Unseen
     }
     return 0;
 }
@@ -75,11 +79,18 @@ void changeDir(char* dir)
     }
 }
 
+void printLastCMD()
+{
+    lastCommand == NULL ? printf("\n") : printf("%s", lastCommand);
+}
+
 int specialForms(cmdLine* pCmdLine) 
 {
     int ret = 1;
     strcmp(pCmdLine->arguments[0], "quit") == 0 ? _exit(0) :
-    strcmp(pCmdLine->arguments[0], "cd") == 0 ? changeDir(pCmdLine->arguments[1]) : ret--;
+    strcmp(pCmdLine->arguments[0], "cd") == 0 ? changeDir(pCmdLine->arguments[1]) : 
+    strcmp(pCmdLine->arguments[0], "prtrls") == 0 ? printLastCMD() :
+    ret--;
     return ret;
 }
 
