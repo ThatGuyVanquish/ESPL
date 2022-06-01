@@ -1,0 +1,17 @@
+0.1:
+awk '{print $0}' mark.txt
+
+0.2:
+awk '{print $3,$4}' mark.txt
+
+0.3:
+awk '{/a/} {print($2,$4)}' mark.txt
+
+0.4:
+awk '{print $1,$4,$3,$2}' mark.txt
+
+0.5:
+awk '{while (getline == 1) {$3 == "English" ? cnt++ : 0} {print("Count =", cnt)}}' mark.txt
+
+0.6: 
+awk '{while (getline == 1) {if ($4 > 87) print $0}}' mark.txt

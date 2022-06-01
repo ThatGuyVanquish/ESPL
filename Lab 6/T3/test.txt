@@ -1,0 +1,9 @@
+total 80
+-rw-r--r-- 1 herscon@wincs.cs.bgu.ac.il floppy  3708 May 25 09:02 LineParser.c
+-rw-r--r-- 1 herscon@wincs.cs.bgu.ac.il floppy  1194 May 25 09:02 LineParser.h
+-rw-r--r-- 1 herscon@wincs.cs.bgu.ac.il floppy 10196 May 25 09:02 LineParser.o
+-rw-r--r-- 1 herscon@wincs.cs.bgu.ac.il floppy   324 May 25 09:02 makefile
+-rwxr-xr-x 1 herscon@wincs.cs.bgu.ac.il floppy 25512 May 25 09:51 mypipeline
+-rw-r--r-- 1 herscon@wincs.cs.bgu.ac.il floppy  6332 May 25 09:51 mypipeline.c
+-rw-r--r-- 1 herscon@wincs.cs.bgu.ac.il floppy 13272 May 25 09:51 mypipeline.o
+-rw-r--r-- 1 herscon@wincs.cs.bgu.ac.il floppy     0 May 25 10:11 test.txt
