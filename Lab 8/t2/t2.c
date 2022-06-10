@@ -27,6 +27,7 @@ char* checkDataType(Elf32_Ehdr *header);
 void printSectionNames();
 char* sectionType(int val);
 void printSymbols();
+char* findSection(Elf32_Sym *entry);
 Elf32_Shdr* getTable(char *table);
 void quit();
 
@@ -130,7 +131,7 @@ void printSectionNames()
     for (int i = 0; i<header->e_shnum; i++)
     {   
         int offset = map_start + header->e_shoff + i * header->e_shentsize;
-        Elf32_Shdr *entry = offset;
+        Elf32_Shdr *entry = (void*)offset;
         char *entName = map_start + stringTables->sh_offset + entry->sh_name;
         debug ?
         printf("%2d:   %06d\t%06d\t%-13.10s\t%-18.18s\t%d\n",i, entry->sh_offset, entry->sh_size, sectionType(entry->sh_type), entName,offset) :
@@ -156,7 +157,7 @@ char* sectionType(int val)
 }
 
 void printSymbols()
-{// EDIT THIS
+{
     if (currentFD == -1)
     {
         fprintf(stderr, "Current FD is invalid\n");
@@ -164,7 +165,6 @@ void printSymbols()
     }
     Elf32_Shdr *symbolTable = getTable(".symtab");
     Elf32_Shdr *strtab = getTable(".strtab");
-    Elf32_Shdr *shstrtab = getTable(".shstrtab");
     if (symbolTable == NULL) 
     {
         fprintf(stderr, "Can't find the symbol table\n");
@@ -172,29 +172,33 @@ void printSymbols()
     }
 
     int symbols = symbolTable->sh_size / sizeof(Elf32_Sym);
-    debug ? printf("[Num]\tValue\t\tsection_index\tsection_name\t\tsymbol_name\t\tsize\n") :
-        printf("[Num]\tValue\t\tsection_index\tsection_name\t\tsymbol_name\n");
+    debug ? printf("Num:\tValue\t\tsection index\tsection name\t\tsymbol name\t\tsize\n") :
+        printf("Num:\tValue\t\tsection index\tsection name\t\tsymbol name\n");
 
-    for (size_t i = 0; i < symbols; i++) {
+    for (size_t i = 0; i < symbols; i++) 
+    {
         Elf32_Sym *entry = map_start + symbolTable->sh_offset + (i * sizeof(Elf32_Sym));
-        char *sectionName;
-        if (entry->st_shndx == 0xFFF1) { sectionName = "ABS";}
-        else if (entry->st_shndx == 0x0) { sectionName = "UND";}
-        else {
-            Elf32_Shdr *section_entry = map_start + header->e_shoff + (entry->st_shndx * header->e_shentsize);
-            sectionName = map_start + shstrtab->sh_offset + section_entry->sh_name;
-        }
+        char *sectionName = findSection(entry);
         char *symbolName = map_start + strtab->sh_offset + entry->st_name;
         char *symbolSize = map_start + strtab->sh_offset + entry->st_size;
-        if (debug){
-            printf("[%2d]\t%#09x\t%d\t\t%-13.20s\t\t\%-20.30s\t\t%-20.30s\n",
-            i, entry->st_value, entry->st_shndx, sectionName,symbolName,symbolSize);
-        }
-        else {
-            printf("[%2d]\t%#09x\t%d\t\t%-13.20s\t\t\%-20.30s\n",
-                i, entry->st_value, entry->st_shndx, sectionName,symbolName);
-        }
+
+        debug ? 
+        printf("%2d:\t%#09x\t%d\t\t%-13.20s\t\t\%-20.30s\t\t%-20.30s\n", i, entry->st_value, entry->st_shndx, sectionName,symbolName,symbolSize) :
+        printf("%2d:\t%#09x\t%d\t\t%-13.20s\t\t\%-20.30s\n", i, entry->st_value, entry->st_shndx, sectionName,symbolName);
     }
+}
+
+char* findSection(Elf32_Sym* entry)
+{
+    char* sectionName;
+    if (entry->st_shndx == SHN_ABS) sectionName = "ABS";
+    else if (entry->st_shndx == SHN_UNDEF) sectionName = "UND";
+    else 
+    {
+        Elf32_Shdr *section_entry = map_start + header->e_shoff + (entry->st_shndx * header->e_shentsize);
+        sectionName = map_start + getTable(".shstrtab")->sh_offset + section_entry->sh_name;
+    }
+    return sectionName;
 }
 
 Elf32_Shdr* getTable(char* table)
