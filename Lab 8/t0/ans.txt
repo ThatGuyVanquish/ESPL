@@ -1,0 +1,7 @@
+readelf -a a.out
+
+2. 34
+3. size of .text is 440B
+4. yes, at 080482e0 (found in symtab)
+5. yes V
+6. at 08048388 (found in symtab) 
