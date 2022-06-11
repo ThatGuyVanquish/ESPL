@@ -1,0 +1,17 @@
+Num     Value   Size   Index           Section                Symbol
+66:	000770	000088	000014		.text        		main 
+
+
+Section text:
+Num:  Value    Size    Type            Name    Offset
+14:   000520	000342	PROGBITS     	.text    000520
+
+
+
+
+3b
+8D (address 770)
+LEA (load effective address)
+
+89 (address 781)
+MOV (move)

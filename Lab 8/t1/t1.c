@@ -127,12 +127,11 @@ void printSectionNames()
 
     for (int i = 0; i<header->e_shnum; i++)
     {   
-        int offset = map_start + header->e_shoff + i * header->e_shentsize;
-        Elf32_Shdr *entry = offset;
+        Elf32_Shdr *entry = map_start + header->e_shoff + i * header->e_shentsize;
         char *entName = map_start + stringTables->sh_offset + entry->sh_name;
         debug ?
-        printf("[%2d] %06d\t%06d\t%-13.10s\t%-18.18s\t%d\n",i, entry->sh_offset, entry->sh_size, sectionType(entry->sh_type), entName,offset) :
-        printf("[%2d] %06d\t%06d\t%-13.10s\t%-18.18s\n",i, entry->sh_offset, entry->sh_size, sectionType(entry->sh_type), entName);
+        printf("%2d:   %06x\t%06x\t%-13.10s\t%-18.18s\t%06x\n",i, entry->sh_addr, entry->sh_size, sectionType(entry->sh_type), entName, entry->sh_offset) :
+        printf("%2d:   %06x\t%06x\t%-13.10s\t%-18.18s\n",i, entry->sh_addr, entry->sh_size, sectionType(entry->sh_type), entName);
     }
 }
 
