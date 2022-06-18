@@ -1,0 +1,20 @@
+ELFexec:
+entry point is at 0x8048294
+
+ELFexec2short:
+entry point is at 0x8048080
+
+fields that differ:
+
+entry point address
+
+ELFexec:
+main: assuming it's start this time so at 
+byte 294
+
+ELFexec2short:
+byte 080
+
+ELFexec has the virus
+
+change stuff at 0x18 to make it same as ELFexec2short
