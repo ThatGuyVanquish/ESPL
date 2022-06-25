@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jun 10 18:40:41 2022
+# Make data base, printed on Mon Jun 20 10:36:46 2022
 
 # Variables
 
@@ -47,15 +47,15 @@ GDMSESSION = ubuntu
 # environment
 XMODIFIERS = @im=ibus
 # makefile
-CURDIR := /home/nave/Documents/GitHub/ESPL
+CURDIR := /home/nave/Documents/ESPL
 # makefile
 SHELL = /bin/sh
 # environment
-SNAP_DATA = /var/snap/code/97
+SNAP_DATA = /var/snap/code/99
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
 # environment
-JOURNAL_STREAM = 8:33410
+JOURNAL_STREAM = 8:37070
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # environment
@@ -81,9 +81,9 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-_ = /snap/code/97/usr/share/code/code
+_ = /snap/code/99/usr/share/code/code
 # environment
-MANAGERPID = 1229
+MANAGERPID = 1261
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -91,7 +91,7 @@ LC_NAME = en_US.UTF-8
 # environment
 VSCODE_CWD = /home/nave
 # environment
-GSETTINGS_SCHEMA_DIR = /snap/code/97/usr/share/glib-2.0/schemas
+GSETTINGS_SCHEMA_DIR = /snap/code/99/usr/share/glib-2.0/schemas
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
@@ -99,15 +99,15 @@ NO_PROXY = 127.0.0.1
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/nave:@/tmp/.ICE-unix/1533,unix/nave:/tmp/.ICE-unix/1533
+SESSION_MANAGER = local/nave:@/tmp/.ICE-unix/1547,unix/nave:/tmp/.ICE-unix/1547
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GDK_PIXBUF_MODULE_FILE = /home/nave/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # environment
-SNAP = /snap/code/97
+SNAP = /snap/code/99
 # environment
-SNAP_VERSION = c3511e6c
+SNAP_VERSION = 30d9c6cd
 # environment
 XDG_MENU_PREFIX = gnome-
 # environment
@@ -117,9 +117,9 @@ DISABLE_WAYLAND = 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = b25e4a8f265045d0a2d135424d1b4907
+INVOCATION_ID = 204811462f0e47ecb0f9803291155f1b
 # environment
-GDK_PIXBUF_MODULEDIR = /snap/code/97/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+GDK_PIXBUF_MODULEDIR = /snap/code/99/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -129,7 +129,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 3912
+GIO_LAUNCHED_DESKTOP_FILE_PID = 2417
 # automatic
 %F = $(notdir $%)
 # environment
@@ -139,11 +139,11 @@ VSCODE_PIPE_LOGGING = true
 # environment
 SNAP_INSTANCE_KEY = 
 # environment
-PWD = /home/nave/Documents/GitHub/ESPL
+PWD = /home/nave/Documents/ESPL
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 1447
+SSH_AGENT_PID = 1483
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -157,7 +157,7 @@ LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
 VSCODE_CLI = 1
 # environment
-VSCODE_CODE_CACHE_PATH = /home/nave/.config/Code/CachedData/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
+VSCODE_CODE_CACHE_PATH = /home/nave/.config/Code/CachedData/30d9c6cd9483b2cc586687151bcbcd635f373630
 # environment
 LOGNAME = nave
 # environment
@@ -183,7 +183,7 @@ LC_TIME = en_US.UTF-8
 # environment
 SNAP_REAL_HOME = /home/nave
 # environment
-PLATFORMIO_PATH = /home/nave/.platformio/penv/bin:/home/nave/.platformio/penv:/home/nave/.platformio/python3/bin:/home/nave/.local/bin:/home/nave/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PLATFORMIO_PATH = /home/nave/.platformio/python3/bin:/home/nave/.local/bin:/home/nave/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # default
 MAKE = $(MAKE_COMMAND)
 # default
@@ -191,19 +191,19 @@ MAKECMDGOALS := all
 # environment
 PATH = /home/nave/.local/bin:/home/nave/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
-SNAP_USER_DATA = /home/nave/snap/code/97
+SNAP_USER_DATA = /home/nave/snap/code/99
 # environment
 SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-b0e18cde-d9c6-4683-b279-8ef29fc673c5.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-7d852ca5-53bc-479b-8f6a-eab0545dae8c.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
 USER = nave
 # environment
-SNAP_REVISION = 97
+SNAP_REVISION = 99
 # environment
 LC_MONETARY = en_US.UTF-8
 # makefile
@@ -223,7 +223,7 @@ MAKE_COMMAND := make
 # environment
 LANGUAGE = en_US
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-7daa0329-1.67.2-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-7daa0329-1.68.1-main.sock
 # environment
 BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
 # makefile
@@ -279,11 +279,11 @@ GJS_DEBUG_OUTPUT = stderr
 # environment
 LC_ADDRESS = en_US.UTF-8
 # environment
+ 
 LANG = C
 # environment
-VSCODE_PID = 3961
+VSCODE_PID = 2470
 # variable set hash-table stats:
- 
 # Load=135/1024=13%, Rehash=0, Collisions=25/157=16%
 
 # Pattern-specific Variable Values
@@ -292,9 +292,9 @@ VSCODE_PID = 3961
 
 # Directories
 
-# . (device 2053, inode 1441824): 14 files, no impossibilities.
+# . (device 2053, inode 1321621): 15 files, no impossibilities.
 
-# 14 files, no impossibilities in 1 directories.
+# 15 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -344,12 +344,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 22 / storage = 176 B / avg = 8 B
-# current buf: size = 8162 B / used = 176 B / count = 22 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 23 / storage = 182 B / avg = 7 B
+# current buf: size = 8162 B / used = 182 B / count = 23 / avg = 7 B
 
-# strcache performance: lookups = 25 / hit rate = 12%
+# strcache performance: lookups = 26 / hit rate = 11%
 # hash-table stats:
-# Load=22/8192=0%, Rehash=0, Collisions=1/25=4%
-# Finished Make data base on Fri Jun 10 18:40:41 2022
+# Load=23/8192=0%, Rehash=0, Collisions=2/26=8%
+# Finished Make data base on Mon Jun 20 10:36:46 2022
 
  
