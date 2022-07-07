@@ -7,6 +7,12 @@
 
 int execute(cmdLine* pCmdLine);
 
+/*
+    Lab 5 - first lab building our own shell
+    task 0a take input from user and use cmdLine
+    struct to execute commands with the function execute
+*/
+
 int main(int argc, char** argv) {
     while(1)
     {

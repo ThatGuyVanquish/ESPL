@@ -10,6 +10,12 @@
 
 char* lastCommand;
 
+/*
+    Lab 6 task 3c
+    We improve on lab 5 task 1 by adding support for pipe | functionality
+    task 3c involves adding functionality for multiple pipe chaining
+*/
+
 void runPipe(cmdLine* p, int** pipes, int* lPipe, int* rPipe, int debug);
 
 int ** createPipes(int nPipes){

@@ -4,7 +4,7 @@
 #define STDOUT 1
 
 extern void system_call();
-
+// Lzl 0b print out argc and argv to stdout without stdlib
 int main (int argc , char* argv[], char* envp[])
 {
   int i;

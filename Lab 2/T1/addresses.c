@@ -2,6 +2,24 @@
 #include <string.h>
 #include <stdlib.h>
 
+// - &addr2: 0xffea7bfc
+// - &addr3: 0xffea7c00
+// - foo: 0x5656c3cd
+// - &addr5: 0x5656f018
+// dist1: (size_t)&addr6 - (size_t)p: -4
+// dist2: (size_t)&local - (size_t)p: -1449948268
+// dist3: (size_t)&foo - (size_t)p:  -11339
+// - addr0: 0x5656f008
+// - addr1: 0x5656f010
+// - &addr6: 0x5656f014
+// - yos: 0x5656d008
+// - addr4: 0x5833a1a0
+// - &addr4: 0xffea7c04
+// - &foo1: 0x5656c4c3
+// - &foo1: 0x5656c4f2
+// - &foo2 - &foo1: 47
+// size of long data type is 4
+
 int addr5;
 int addr6;
 

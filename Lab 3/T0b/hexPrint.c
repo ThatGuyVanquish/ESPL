@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Lab 3 task 0b 
+// Print hexa from file
+
 void PrintHex(char* buffer, size_t length)
 {
 	for(int i = 0; i < length; i++)
-		printf("%x ", buffer[i]);
+		printf("%x ", buffer[i]); // %x prints in hexadecimal
 }
 
 int main(int argc, char** argv)

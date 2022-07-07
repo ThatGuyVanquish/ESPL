@@ -1,4 +1,5 @@
 #! /usr/bin/awk -f
+#Print the number of people who have bachelor's degree (not counting masters)
 
 BEGIN {
 	FS = ","

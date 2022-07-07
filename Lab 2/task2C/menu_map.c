@@ -8,7 +8,9 @@ char censor(char c) {
   else
     return c;
 }
- 
+
+//lab 2 task 2 implementing map
+//             array       array length       function that gets a char and returns a char
 char* map(char *array, int array_length, char (*f) (char)){
   char* mapped_array = (char*)(malloc(array_length*sizeof(char)));
   for(int i = 0; i < array_length; i++) {
@@ -29,7 +31,7 @@ char decrypt(char c) {
 If c is not between 0x41 and 0x7a it is returned unchanged */
 	return ((c >= 'A') && (c <= 'z')) ? c - 2 : c;
 
-}            
+}            //ma she asinu
 char dprt(char c) { 
 /* dprt prints the value of c in a decimal representation followed by a 
 new line, and returns c unchanged. */

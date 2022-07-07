@@ -13,6 +13,8 @@
 #define STDIN 0
 #define STDOUT 1
 
+
+// Lab 4 task 1b, read from input to output and write how many words per line
 extern int system_call();
 
 void count(int debug, int INPUT, int OUTPUT)
@@ -88,6 +90,7 @@ int main (int argc , char* argv[])
 			if (strncmp(argv[i], "-o", 2) == 0)
 			{	
 				output = system_call(SYS_OPEN, argv[i] + 2, O_CW, 0777);
+				// O_CW is create or write
 				if (output < 0) 
 				{
 					system_call(SYS_WRITE, STDOUT, "Error opening output file\n", strlen("Error opening output file\n"));

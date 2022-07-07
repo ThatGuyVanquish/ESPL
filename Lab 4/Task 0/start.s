@@ -2,12 +2,18 @@ section .text
 global _start
 global system_call
 extern main
+; Lab 4 task 0a
+
 _start:
-    pop    dword ecx    ; ecx = argc
+    pop    dword ecx    ; takes the last 4 bytes (argc) and puts them in ecx
     mov    esi,esp      ; esi = argv
     ;; lea eax, [esi+4*ecx+4] ; eax = envp = (4*ecx)+esi+4
     mov     eax,ecx     ; put the number of arguments into eax
     shl     eax,2       ; compute the size of argv in bytes
+    ; each argv holds the address to the string value on the heap
+    ; therefore we want to compute the size of argv[] in bytes
+    ; so we need to multiply the number of addresses (currently an int
+    ; by 4, therefore we do shift left 2 times (num * 2 * 2)
     add     eax,esi     ; add the size to the address of argv 
     add     eax,4       ; skip NULL at the end of argv
     push    dword eax   ; char *envp[]
@@ -16,7 +22,7 @@ _start:
 
     call    main        ; int main( int argc, char *argv[], char *envp[] )
 
-    mov     ebx,eax
+    mov     ebx,eax     ; eax contains the return value from main
     mov     eax,1
     int     0x80
     nop

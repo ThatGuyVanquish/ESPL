@@ -1,5 +1,5 @@
 #! /usr/bin/awk -f
-
+# Print all the movies where the index is between 50 and 70
 BEGIN {
 	FS = ","
 }

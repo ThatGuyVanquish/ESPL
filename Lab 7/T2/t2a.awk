@@ -1,5 +1,5 @@
 #! /usr/bin/awk -f
-
+# Prints average grades of math reading and writing 
 BEGIN {
 	FS = ","
 }

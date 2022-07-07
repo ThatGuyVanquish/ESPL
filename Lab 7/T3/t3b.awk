@@ -1,5 +1,5 @@
 #! /usr/bin/awk -f
-
+# Print the number of poems which have 'fun' or 'fan'
 BEGIN {
 	FS = ","
 	OFS = "---"

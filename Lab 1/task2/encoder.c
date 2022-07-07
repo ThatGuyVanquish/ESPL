@@ -216,8 +216,9 @@ int main(int argc, char **argv)
 			hex = hexToInt(*argv[i],*(argv[i] + 2));
 			continue;
 		}
-		if (strncmp(argv[i], "-i", 2) == 0) // task1d arg
+		if (strncmp(argv[i], "-i", 2) == 0) // ta=sk1d arg
 		{
+			//r for read
 			input = fopen(argv[i] + 2, "r");
 			if (input == NULL)
 			{
@@ -233,3 +234,4 @@ int main(int argc, char **argv)
 	task2(input, output, debug, hex);
 	return 0;
 }
+ ```

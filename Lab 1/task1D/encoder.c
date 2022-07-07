@@ -1,9 +1,15 @@
+//task 1 lab 1 - fopen fclose fprint
+
 #include <stdio.h>
 #include <string.h>
 
+//encoder reads the characters from standard input and 
+//prints it except the uppercase (capital letters) that
+// it replaced with the character '.'.v
 int task1a(FILE *input)
 {
 	char currentChar;
+	//fgetc is blocking. eof is control d
 	while ((currentChar = fgetc(input)) != EOF)
 	{
 		if (currentChar <= 90 && currentChar >= 65)
@@ -14,6 +20,10 @@ int task1a(FILE *input)
 	return 0;
 }
 
+//debug mode:
+//encoder receives text characters from standard input 
+//and prints it after encoding uppercase letters into 
+//'.' to the standard output.
 int task1b(FILE *input, int debug)
 {
 	char currentChar;
@@ -48,13 +58,21 @@ int hexToInt(char sym, char hex)
 	int mul = 1;
 	if (sym == '-')
 		mul = -1;
+	// this is A-F
 	if (hex >= 65 && hex <= 70)
 		return mul * (hex - 55);
+	//this hs number
 	if (hex >= 48 && hex <= 57)
 		return mul * (hex - 48);
 	return 104;
 }
 
+//The encryption key is of the following structure: +e{key}. 
+//The argument {key} stands for a digit in hexadecimal whose
+// value will be the number of characters to add to the end of
+// the input such that it repeats the first character. 
+
+//Task 1d: Supporting input from a file
 int task1c(FILE *input, int debug, int hex)
 {
 	char currentChar;
@@ -128,6 +146,7 @@ int main(int argc, char **argv)
 {
 	int debug = 0;
 	int hex = 0;
+	//stdin == 0
 	FILE *input = stdin;
 	for (int i = 1; i < argc; i++)
 	{

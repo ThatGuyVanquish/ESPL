@@ -8,7 +8,11 @@ char censor(char c) {
   else
     return c;
 }
- 
+ /* LAB 2 TASK 3
+ The important part of this lab is to learn how to use 
+ pointers to functions
+ we created a menu of fun_desc structs
+ */
 char* map(char *array, int array_length, char (*f) (char)){
   char* mapped_array = (char*)(malloc(array_length*sizeof(char)));
   for(int i = 0; i < array_length; i++) {
@@ -67,8 +71,8 @@ int main(int argc, char **argv){
 		int len = sizeof(menu)/sizeof(struct fun_desc) - 1;
 		for(int i = 0; i < len; i++)
 			printf("%d) %s\n", i, menu[i].name);
-		int input = fgetc(stdin) - '0';
-		fgetc(stdin);
+		int input = fgetc(stdin) - '0'; //deduct the ascii value of 0 from fgetc
+		fgetc(stdin); // get rid of newline
 		printf("Option: %d\n", input);
 		if (input >= 0 && input < len)
 			printf("Within bounds\n");

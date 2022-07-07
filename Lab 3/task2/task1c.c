@@ -27,10 +27,12 @@ typedef struct fun_desc {
   link* (*fun)(link*, FILE*);
 } fun_desc;
 
+// Lab 3
+
 void readVirus(virus* vir, FILE* input) {
 	char size[2];
 	fread(size, 2, 1, input);
-	vir->SigSize = size[0] | size[1] << 8;
+	vir->SigSize = size[0] | size[1] << 8; // shift left 8 bits
 	vir->sig = malloc(vir->SigSize);
 	size_t sig = fread(vir->sig, 1, vir->SigSize, input);
 	if (sig == 0){
@@ -77,6 +79,15 @@ void list_free(link *virus_list) {
 	}
 }
 
+// Lab 3 Task 1b, load all viruses to linked list
+/* load viruses loads all the signatures from a file to virus_list
+	1) reset the current virus list
+	1.1) we need link *virus_list to reset the current list, 
+		 otherwise we will have memory leaks
+	2) allocate memory for the new list
+	3) read the file and build the new virus list
+	4) return the new virus list
+*/
 link *loadViruses(link *virus_list, FILE* output)
 {	
 	char fileName[100];
@@ -91,8 +102,9 @@ link *loadViruses(link *virus_list, FILE* output)
 		fprintf(stderr, "Can't open file\n");
 		exit(1);
 	}
-	list_free(virus_list);
-	while (!feof(fp)) {
+	// free all the allocated memory in virus_list
+	list_free(virus_list); 
+	while (!feof(fp)) { // while not end of file
 		virus *vir = malloc(sizeof(virus));
 		readVirus(vir, fp);
 		if (vir == NULL)
@@ -117,6 +129,9 @@ link* list_print(link *virus_list, FILE* output) {
 		list_print(virus_list->nextVirus, output);
 	return virus_list;
 }
+
+// Lab 3 Task 1c (detect_virus and pre_detection)
+// detect all viruses in the file and print them
 
 void detect_virus(char *buffer, unsigned int size, link *virus_list) {
 	link *currLink = virus_list->nextVirus;
@@ -145,6 +160,11 @@ link* pre_detection(link *virus_list, FILE* output) {
 	fclose(fp);
 	return virus_list;
 }
+
+// Lab 3 Task 2, fix file
+// given the starting byte and size of the virus
+// from stdin, replace all of the virus signature
+// with 0x90 (nop)
 
 void kill_virus(char *fileName, int signatureOffset, int signatureSize) {
 	FILE *fp = fopen(fileName, "r+");

@@ -1,4 +1,5 @@
 #! /usr/bin/awk -f
+# Print all the poems with 'spring' in them
 
 BEGIN {
 	FS = ","

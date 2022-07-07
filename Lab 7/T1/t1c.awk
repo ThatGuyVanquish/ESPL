@@ -1,5 +1,5 @@
 #! /usr/bin/awk -f
-
+# Print all actors who played in movies that were shot after 1970
 BEGIN {
 	FS = ","
 }

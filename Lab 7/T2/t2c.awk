@@ -1,5 +1,5 @@
 #! /usr/bin/awk -f
-
+# Print information about the students with averages over 80
 BEGIN {
 	FS = ","
 	print ("=======")

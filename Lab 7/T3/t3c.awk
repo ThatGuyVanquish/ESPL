@@ -1,5 +1,5 @@
 #! /usr/bin/awk -f
-
+# Print all the lines which have 'happy'
 BEGIN {
 	FS = ","
 	OFS = "---"
