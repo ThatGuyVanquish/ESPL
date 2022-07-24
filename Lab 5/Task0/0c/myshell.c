@@ -42,7 +42,8 @@ int execute(cmdLine* pCmdLine, int debug)
     int pid = fork();
     if (pid == 0)
     {
-        int err = execvp(pCmdLine->arguments[0], pCmdLine->arguments);
+        int err = execvp(pCmdLine->arguments[0], 
+            pCmdLine->arguments);
         if (err < 0)
             {
                 perror("Error");
@@ -51,7 +52,8 @@ int execute(cmdLine* pCmdLine, int debug)
     }
     if (debug == 1)
     {
-        fprintf(stderr, "PID %d\n Command: %s\n\n", pid, pCmdLine->arguments[0]);
+        fprintf(stderr, "PID %d\n Command: %s\n\n", pid, 
+            pCmdLine->arguments[0]);
     }
     
     return 0;

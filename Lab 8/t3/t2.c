@@ -7,6 +7,11 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 
+/*
+    Lab 8 Task 0-2
+    Reading ELF files, and displaying a the section names table
+    and symbol names table using a function menu
+*/
 int debug = 0;
 int currentFD = -1;
 char* currentOpenFile = NULL; // Current opened file name
@@ -32,10 +37,8 @@ Elf32_Shdr* getTable(char *table);
 void clear();
 void quit();
 
-void toggleDebug() 
-{
-    if (debug)
-    {
+void toggleDebug() {
+    if (debug){
         debug--;
         fprintf(stderr, "Debug is now off\n");
         return;
@@ -50,9 +53,9 @@ void examineELF()
     mapFile();
     printf("\n");
     header = (Elf32_Ehdr*)map_start; // Sets the pointer to the beginning of the mapped file
-    if (isELFFile(header))
-    {
-        printf("Magic number:\t\t\t %x %x %x\n", header->e_ident[EI_MAG0], header->e_ident[EI_MAG1], header->e_ident[EI_MAG2]);
+    if (isELFFile(header)) {
+        printf("Magic number:\t\t\t %x %x %x\n", header->e_ident[EI_MAG0], 
+            header->e_ident[EI_MAG1], header->e_ident[EI_MAG2]);
         printf("Data Encoding Scheme:\t\t %s\n", checkDataType(header));
         printf("Address of entry point:\t\t 0x%x\n", header->e_entry);
         printf("Section header offset:\t\t %d\n", header->e_shoff);
@@ -62,8 +65,7 @@ void examineELF()
         printf("Number of program header entries:%d\n", header->e_phnum);
         printf("Size of program headers:\t %d\n", header->e_phentsize);
     }
-    else
-    {
+    else {
         printf("%s is not an ELF file\n", currentOpenFile);
         munmap(map_start, fd_stat.st_size);
         close(currentFD);
@@ -72,22 +74,20 @@ void examineELF()
     }
 }
 
-int mapFile()
-{
+int mapFile() {
     char fileName[100];
     int fd;
     fscanf(stdin, "%s", fileName);
-    if ((fd = open(fileName, O_RDWR)) < 0)
-    {
+    if ((fd = open(fileName, O_RDWR)) < 0) {
         if (debug) perror("Can't open file");
         exit(1);
     }
-    if (fstat(fd, &fd_stat) != 0)
-    {
+    if (fstat(fd, &fd_stat) != 0) {
         if (debug) perror("FStat failed");
         exit(1);
     }
-    if ((map_start = mmap(0, fd_stat.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0)) == MAP_FAILED)
+    if ((map_start = 
+        mmap(0, fd_stat.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0)) == MAP_FAILED)
     {
         if (debug) perror("MMap Failed");
         exit(1);
@@ -99,13 +99,12 @@ int mapFile()
     return currentFD;
 }
 
-int isELFFile(Elf32_Ehdr *header) // Checks if first 4 bytes of header are exact to the ones that identify an ELF file
-{
+int isELFFile(Elf32_Ehdr *header)  {
+// Checks if first 4 bytes of header are exact to the ones that identify an ELF file
     return (strncmp((char*)header->e_ident, (char*)ELFMAG, 4) == 0) ? 1 : 0;
 }
 
-char* checkDataType(Elf32_Ehdr *header)
-{
+char* checkDataType(Elf32_Ehdr *header) {
     return 
     header->e_ident[EI_DATA] == ELFDATANONE ? "Invalid Encoding" :
     header->e_ident[EI_DATA] == ELFDATA2MSB ? "2's complement, big endian" :
@@ -113,35 +112,33 @@ char* checkDataType(Elf32_Ehdr *header)
     "There is no data";
 }
 
-void printSectionNames()
-{
-    if (currentFD == -1)
-    {
+void printSectionNames() {
+    if (currentFD == -1) {
         fprintf(stderr, "Current FD is invalid\n");
         return;
     }
     Elf32_Shdr *sectionsTable = map_start + header->e_shoff; // Pointer to sections table
-    Elf32_Shdr *stringTables = map_start + header->e_shoff + header->e_shstrndx * header->e_shentsize; // Pointer to string table, necessary for debug mode
-    if (debug)
-    {
+    Elf32_Shdr *stringTables = map_start + header->e_shoff + header->e_shstrndx * header->e_shentsize; 
+    // Pointer to string table, necessary for debug mode
+    if (debug) {
         fprintf(stderr, "Section Table Address: %p\n", sectionsTable);
         printf("Num:  Value \tSize\tType\t\tName\t\t\tOffset(bytes)\n");
         
     }
     else printf("Num:  Value \tSize\tType\t\tName\n");
 
-    for (int i = 0; i<header->e_shnum; i++)
-    {   
+    for (int i = 0; i<header->e_shnum; i++) {   
         Elf32_Shdr *entry = map_start + header->e_shoff + i * header->e_shentsize;
         char *entName = map_start + stringTables->sh_offset + entry->sh_name;
         debug ?
-        printf("%2d:   %06x\t%06x\t%-13.10s\t%-18.18s\t%06x\n",i, entry->sh_addr, entry->sh_size, sectionType(entry->sh_type), entName, entry->sh_offset) :
-        printf("%2d:   %06x\t%06x\t%-13.10s\t%-18.18s\n",i, entry->sh_addr, entry->sh_size, sectionType(entry->sh_type), entName);
+        printf("%2d:   %06x\t%06x\t%-13.10s\t%-18.18s\t%06x\n",i, entry->sh_addr, entry->sh_size, 
+            sectionType(entry->sh_type), entName, entry->sh_offset) :
+        printf("%2d:   %06x\t%06x\t%-13.10s\t%-18.18s\n",i, entry->sh_addr, entry->sh_size, 
+            sectionType(entry->sh_type), entName);
     }
 }
 
-char* sectionType(int val)
-{
+char* sectionType(int val) {
     return val == SHT_NULL ? "NULL" :
     val == SHT_PROGBITS ? "PROGBITS" :
     val == SHT_SYMTAB ? "SYMTAB" :
@@ -157,17 +154,14 @@ char* sectionType(int val)
     "UNKNOWN";
 }
 
-void printSymbols()
-{
-    if (currentFD == -1)
-    {
+void printSymbols() {
+    if (currentFD == -1) {
         fprintf(stderr, "Current FD is invalid\n");
         return;
     }
     Elf32_Shdr *symbolTable = getTable(".symtab");
     Elf32_Shdr *strtab = getTable(".strtab");
-    if (symbolTable == NULL) 
-    {
+    if (symbolTable == NULL) {
         fprintf(stderr, "Can't find the symbol table\n");
         return;
     }
@@ -176,36 +170,34 @@ void printSymbols()
     debug ? printf("Num:\tValue\tSize\tSection Index\tSection Name\t\tSymbol Name\n") :
         printf("Num:\tValue\tSection Index\tSection Name\t\tSymbol Name\n");
 
-    for (size_t i = 0; i < symbols; i++) 
-    {
+    for (size_t i = 0; i < symbols; i++) {
         Elf32_Sym *entry = map_start + symbolTable->sh_offset + (i * sizeof(Elf32_Sym));
         char *sectionName = findSection(entry);
         char *symbolName = map_start + strtab->sh_offset + entry->st_name;
 
         debug ? 
-        printf("%2d:\t%06x\t%06d\t%06d\t\t%-13.20s\t\t\%-20.30s\n", i, entry->st_value, entry->st_size, entry->st_shndx, sectionName, symbolName) :
-        printf("%2d:\t%06x\t%06d\t\t%-13.20s\t\t\%-20.30s\n", i, entry->st_value, entry->st_shndx, sectionName,symbolName);
+        printf("%2d:\t%06x\t%06d\t%06d\t\t%-13.20s\t\t\%-20.30s\n", i, entry->st_value, 
+            entry->st_size, entry->st_shndx, sectionName, symbolName) :
+        printf("%2d:\t%06x\t%06d\t\t%-13.20s\t\t\%-20.30s\n", i, entry->st_value, 
+            entry->st_shndx, sectionName,symbolName);
     }
 }
 
-char* findSection(Elf32_Sym* entry)
-{
+char* findSection(Elf32_Sym* entry) {
     char* sectionName;
     if (entry->st_shndx == SHN_ABS) sectionName = "ABS";
     else if (entry->st_shndx == SHN_UNDEF) sectionName = "UND";
-    else 
-    {
+    else {
         Elf32_Shdr *section_entry = map_start + header->e_shoff + (entry->st_shndx * header->e_shentsize);
         sectionName = map_start + getTable(".shstrtab")->sh_offset + section_entry->sh_name;
     }
     return sectionName;
 }
 
-Elf32_Shdr* getTable(char* table)
-{
-    Elf32_Shdr* stringTable = map_start + header->e_shoff + (header->e_shstrndx * header->e_shentsize); // Pointer to string table
-    for (int i = 0; i < header->e_shnum; i++)
-    {
+Elf32_Shdr* getTable(char* table) {
+    Elf32_Shdr* stringTable = map_start + header->e_shoff + (header->e_shstrndx * header->e_shentsize); 
+    // Pointer to string table
+    for (int i = 0; i < header->e_shnum; i++) {
         Elf32_Shdr* entry = map_start + header->e_shoff + i * header->e_shentsize;
         char* entryName = map_start + stringTable->sh_offset + entry->sh_name;
         if(strcmp(table, entryName)==0) return entry;
@@ -213,16 +205,11 @@ Elf32_Shdr* getTable(char* table)
     return NULL;
 }
 
-void clear()
-{
-    system("clear");
-}
+void clear() { system("clear");}
 
-void quit()
-{
+void quit() {
     if (debug) fprintf(stderr, "Quitting\n");
-    if (currentFD != -1)
-    {
+    if (currentFD != -1) {
         munmap(map_start, fd_stat.st_size);
         close(currentFD);
         currentFD = -1;
@@ -231,19 +218,17 @@ void quit()
     exit(0);
 }
 
-int getUserInput()
-{
-  int opCode;
-  printf("Option: ");
-  scanf("%d", &opCode);
-  printf("\n");
-  if (opCode >= 0 && opCode <= 5)
-    return opCode;
-  else
-  {
-    printf("Not within bounds\n");
-    return -1;
-  }
+int getUserInput() {
+    int opCode;
+    printf("Option: ");
+    scanf("%d", &opCode);
+    printf("\n");
+    if (opCode >= 0 && opCode <= 5)
+        return opCode;
+    else {
+        printf("Not within bounds\n");
+        return -1;
+    }
 }
 
 int main(int argc, char **argv){

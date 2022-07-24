@@ -4,6 +4,13 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+
+/*
+    Lab 6 task 0, improving on lab 5 by adding
+    pipe to the shell
+    also added forking to create child
+    processes
+*/
 int main(int argc, char** argv)
 {
     char c;

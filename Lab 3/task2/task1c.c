@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+//lab3 task2
+//we used linked list of verouses read from a binary
+//file nd coud detect all viruses in anuter file.
+//and fix them! Good luck in the exam!!!
 void PrintHex(unsigned char *buffer, size_t length)
 {
 	for(int i = 0; i < length; i++)
@@ -27,12 +31,10 @@ typedef struct fun_desc {
   link* (*fun)(link*, FILE*);
 } fun_desc;
 
-// Lab 3
-
 void readVirus(virus* vir, FILE* input) {
 	char size[2];
 	fread(size, 2, 1, input);
-	vir->SigSize = size[0] | size[1] << 8; // shift left 8 bits
+	vir->SigSize = size[0] | size[1] << 8;
 	vir->sig = malloc(vir->SigSize);
 	size_t sig = fread(vir->sig, 1, vir->SigSize, input);
 	if (sig == 0){
@@ -53,6 +55,8 @@ void printVirus(virus* vir, FILE* output)
 	PrintHex(vir->sig, vir->SigSize);
 	printf("\n");
 }
+
+
 
 link* list_append(link* virus_list, link* to_add) {
 	if (to_add == NULL || virus_list == NULL)
@@ -79,15 +83,6 @@ void list_free(link *virus_list) {
 	}
 }
 
-// Lab 3 Task 1b, load all viruses to linked list
-/* load viruses loads all the signatures from a file to virus_list
-	1) reset the current virus list
-	1.1) we need link *virus_list to reset the current list, 
-		 otherwise we will have memory leaks
-	2) allocate memory for the new list
-	3) read the file and build the new virus list
-	4) return the new virus list
-*/
 link *loadViruses(link *virus_list, FILE* output)
 {	
 	char fileName[100];
@@ -102,9 +97,8 @@ link *loadViruses(link *virus_list, FILE* output)
 		fprintf(stderr, "Can't open file\n");
 		exit(1);
 	}
-	// free all the allocated memory in virus_list
-	list_free(virus_list); 
-	while (!feof(fp)) { // while not end of file
+	list_free(virus_list);
+	while (!feof(fp)) {
 		virus *vir = malloc(sizeof(virus));
 		readVirus(vir, fp);
 		if (vir == NULL)
@@ -130,16 +124,14 @@ link* list_print(link *virus_list, FILE* output) {
 	return virus_list;
 }
 
-// Lab 3 Task 1c (detect_virus and pre_detection)
-// detect all viruses in the file and print them
-
 void detect_virus(char *buffer, unsigned int size, link *virus_list) {
 	link *currLink = virus_list->nextVirus;
 	while(currLink != NULL) {
 		virus *currentVir = currLink->vir;
 		for(int i = 0; i < size; i++) {
 			if (memcmp(buffer + i, currentVir->sig, currentVir->SigSize) == 0){
-				printf("Starting byte location: %d\nVirus name: %s\nVirus size: %d\n", i, currLink->vir->virusName, currLink->vir->SigSize);			
+				printf("Starting byte location: %d\nVirus name: %s\nVirus size:
+				 %d\n", i, currLink->vir->virusName, currLink->vir->SigSize);			
 			}
 		}
 		currLink = currLink->nextVirus;
@@ -160,11 +152,6 @@ link* pre_detection(link *virus_list, FILE* output) {
 	fclose(fp);
 	return virus_list;
 }
-
-// Lab 3 Task 2, fix file
-// given the starting byte and size of the virus
-// from stdin, replace all of the virus signature
-// with 0x90 (nop)
 
 void kill_virus(char *fileName, int signatureOffset, int signatureSize) {
 	FILE *fp = fopen(fileName, "r+");
@@ -187,7 +174,6 @@ link* order_assassin(link *virus_list, FILE* output) {
 	scanf("%[^\n]%*c", fileName);
 	if (sizeof(fileName) == 0)
 		return virus_list;
-
 	printf("Enter the virus starting byte:\n");
 	char *startingByte = malloc(100);
 	scanf("%[^\n]%*c", startingByte);
@@ -201,18 +187,13 @@ link* order_assassin(link *virus_list, FILE* output) {
 	free(virusSize);
 	return virus_list;
 }
-
-link* quit(link *virus_list, FILE* output)
-{
+link* quit(link *virus_list, FILE* output){
 	if (virus_list != NULL)
 		list_free(virus_list);
 	exit(0);
 	return virus_list;
 }
-
-
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
 	link *virus_list = NULL;
 	struct fun_desc menu[] = { 
 	{"Load signatures", loadViruses}, 
